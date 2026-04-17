@@ -18,6 +18,7 @@ export default defineConfig({
 			},
 			components: {
 				ThemeProvider: './src/components/ThemeProvider.astro',
+				ThemeSelect: './src/components/ThemeSelect.astro',
 			},
 			locales: {
 				root: { label: '한국어', lang: 'ko' },

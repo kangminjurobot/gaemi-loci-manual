@@ -2,15 +2,22 @@
 import { Icon } from '@astrojs/starlight/components';
 ---
 
-{/* Customized Starlight ThemeProvider: defaults to dark when the user has no stored preference. */}
+{/*
+  Customized Starlight ThemeProvider.
+  - Forces dark as the default theme on first visit.
+  - Only Light/Dark are supported (Auto is removed in ThemeSelect.astro).
+*/}
 <script is:inline>
 	window.StarlightThemeProvider = (() => {
-		const storedTheme =
-			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
-		const theme = storedTheme || 'dark';
-		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		const hasStorage = typeof localStorage !== 'undefined';
+		const storedTheme = hasStorage && localStorage.getItem('starlight-theme');
+		const theme = storedTheme === 'light' ? 'light' : 'dark';
+		if (hasStorage && storedTheme !== theme) {
+			localStorage.setItem('starlight-theme', theme);
+		}
+		document.documentElement.dataset.theme = theme;
 		return {
-			updatePickers(theme = storedTheme || 'auto') {
+			updatePickers(theme = storedTheme || 'dark') {
 				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
 					const select = picker.querySelector('select');
 					if (select) select.value = theme;
@@ -32,5 +39,4 @@ import { Icon } from '@astrojs/starlight/components';
 <template id="theme-icons">
 	<Icon name="sun" class="light" />
 	<Icon name="moon" class="dark" />
-	<Icon name="laptop" class="auto" />
 </template>
