@@ -1,0 +1,110 @@
+---
+title: Loop Closure Correction
+description: How to improve SLAM map accuracy through pose graph optimization in the 3D Map Editor.
+sidebar:
+  order: 1
+---
+
+import { Image } from 'astro:assets';
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import screenshotFull from '../../../../assets/screenshots/map-correction/map-correction-full.png';
+import screenshotLoopClosureTab from '../../../../assets/screenshots/map-correction/map-correction-loop-closure-tab.webp';
+import screenshotManualLoop from '../../../../assets/screenshots/map-correction/manual_loop_closure.gif';
+import stepSetTarget from '../../../../assets/screenshots/map-correction/loop-closure-step-set-target.png';
+import stepSetSource from '../../../../assets/screenshots/map-correction/loop-closure-step-set-source.png';
+import stepGizmoTranslation from '../../../../assets/screenshots/map-correction/loop-closure-step-gizmo-translation.png';
+import stepGizmoRotation from '../../../../assets/screenshots/map-correction/loop-closure-step-gizmo-rotation.png';
+import stepIcpButton from '../../../../assets/screenshots/map-correction/loop-closure-step-icp-button.png';
+import stepIcp from '../../../../assets/screenshots/map-correction/loop-closure-step-icp.gif';
+import stepAddFactor from '../../../../assets/screenshots/map-correction/loop-closure-step-add-factor.png';
+import stepOptimizeButton from '../../../../assets/screenshots/map-correction/loop-closure-step-optimize-button.png';
+import stepOptimizeBefore from '../../../../assets/screenshots/map-correction/loop-closure-step-optimize-before.png';
+import stepOptimizeAfter from '../../../../assets/screenshots/map-correction/loop-closure-step-optimize-after.png';
+
+Loop closure correction is a feature that corrects the **accumulated error (drift)** that arises during SLAM. It is performed in the **Correction tab** of the 3D Map Editor.
+
+## Screen Layout
+
+<Image src={screenshotFull} alt="Map correction editor full view — MapControls panel on the left and 3D viewport in the center" />
+
+- **Left panel**: Map load/save (MapControls), loop closure panel (LoopClosurePanel), georeference panel
+- **Center**: 3D viewport (point cloud + pose graph)
+
+## Keyframe Color Codes
+
+Keyframes in the 3D viewport are distinguished by color:
+
+| Color | Meaning |
+|------|------|
+| **Red** | Target map keyframe (existing map) |
+| **Green** | Source map keyframe (map to be merged) |
+| **Cyan** | Pinned keyframe (Prior Factor applied) |
+
+## Workflow
+
+The full flow from selecting target/source keyframes to gizmo adjustment, ICP alignment, and optimization.
+
+<img src={screenshotManualLoop.src} alt="Manual loop closure — aligning poses with the gizmo after selecting target/source keyframes" />
+
+<Steps>
+
+1. In the 3D viewer, `Ctrl + right-click` the reference keyframe, then click **Set as Target (Red)**.
+
+   <Image src={stepSetTarget} alt="Set as Target — open the context menu with Ctrl + right-click and choose Set as Target (Red)" />
+
+2. `Ctrl + right-click` the other keyframe to be corrected, then click **Set as Source (Green)**.
+
+   <Image src={stepSetSource} alt="Set as Source — open the context menu with Ctrl + right-click and choose Set as Source (Green)" />
+
+3. Toggle the gizmo mode with the `T` / `R` keys, then hold `Ctrl` and drag the gizmo to manually adjust the position and orientation.
+   - `T`: Translate / `R`: Rotate
+
+   <Image src={stepGizmoTranslation} alt="Translate mode — switch with T and drag with Ctrl to move the keyframe position" />
+   <Image src={stepGizmoRotation} alt="Rotate mode — switch with R and drag with Ctrl to rotate the keyframe orientation" />
+
+4. Perform fine alignment with **Run ICP**.
+   - **Noise Scale**: noise value of the Between Factor (default: 0.01, range: 0 to 1)
+   - **Max Distance**: maximum correspondence distance (default: 5.0 m, range: 0 to 10)
+
+   <Image src={stepIcpButton} alt="Location of the Run ICP button" />
+   <img src={stepIcp.src} alt="Run ICP — precisely aligning target and source keyframes with the ICP algorithm" />
+
+5. Click **Add Loop Factor** (links the reference keyframe with the keyframe to be corrected).
+
+   <Image src={stepAddFactor} alt="Add Loop Factor — add a Between Factor between the reference keyframe and the keyframe to be corrected" />
+
+6. Optimize the map with the **Run Optimization** button.
+
+   <Image src={stepOptimizeButton} alt="Location of the Run Optimization button" />
+
+   <Tabs>
+     <TabItem label="Before optimization">
+       <Image src={stepOptimizeBefore} alt="Map state before optimization" />
+     </TabItem>
+     <TabItem label="After optimization">
+       <Image src={stepOptimizeAfter} alt="Map state after optimization" />
+     </TabItem>
+   </Tabs>
+
+</Steps>
+
+## Typical Workflow
+
+```
+[Manual loop closure workflow]
+1. Ctrl + right-click the reference keyframe → Set as Target (Red)
+2. Ctrl + right-click the keyframe to be corrected → Set as Source (Green)
+3. Toggle gizmo mode with T / R, then Ctrl + drag to adjust position/orientation
+4. [Run ICP] → fine alignment
+5. [Add Loop Factor] → link the reference and corrected keyframes
+6. [Run Optimization] → optimize the map
+7. Review the result and save with [Save]
+```
+
+## Saving the Map
+
+Corrected maps are saved in Boost serialization + Zstandard compression format (`.bin.zst`).
+
+From the MapControls on the left panel:
+- **Save**: Saves immediately to the current path
+- **Save As**: Saves to a different path

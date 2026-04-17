@@ -1,0 +1,33 @@
+---
+title: Overview Tab
+description: Learn how to review overall Job status and select a Job to work on from the dashboard Overview tab.
+---
+
+import { Image } from 'astro:assets';
+import overviewJobsMap from '../../../../assets/screenshots/dashboard/dashboard-overview-jobs-map.png';
+import overviewJobSelected from '../../../../assets/screenshots/dashboard/dashboard-overview-job-selected.png';
+
+The Overview tab gives you an at-a-glance view of the status of every Job.
+
+<Image src={overviewJobsMap} alt="Overview tab full view — list of Job cards grouped by Phase at the top, and Job location markers on a world map at the bottom" />
+
+## Screen Layout
+
+- **Top — Job list**: All Jobs are categorized by the Phase they are currently in.
+  - The list is split into three columns: **Phase 1 (PRE-INSTALLATION)**, **Phase 2 (ON-SITE INSTALLATION)**, and **Phase 3 (EXPANSION)**.
+  - Each Job card shows the name of the Step currently in progress so you can check the work status at a glance.
+- **Bottom — Map view**: The service area location of each Job is shown as a marker on a world map.
+  - You can also click a marker on the map to select the corresponding Job.
+
+## Selecting a Job
+
+<Image src={overviewJobSelected} alt="Selecting a Job on the Overview tab — the map zooms into the relevant area and a button to move to the Workspace is displayed" />
+
+When you select a Job by clicking its card or map marker:
+
+- The map automatically zooms into the corresponding service area.
+- A button to navigate to the **Workspace** tab for the selected Job is displayed.
+
+:::tip
+A typical flow is to review the overall status on the Overview tab, pick the Job you want to work on, and then move to the Workspace tab.
+:::

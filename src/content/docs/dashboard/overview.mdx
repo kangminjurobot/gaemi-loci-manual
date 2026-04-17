@@ -1,0 +1,33 @@
+---
+title: Overview 탭
+description: 대시보드 Overview 탭에서 전체 Job 현황을 파악하고 작업할 Job을 선택하는 방법을 안내합니다.
+---
+
+import { Image } from 'astro:assets';
+import overviewJobsMap from '../../../assets/screenshots/dashboard/dashboard-overview-jobs-map.png';
+import overviewJobSelected from '../../../assets/screenshots/dashboard/dashboard-overview-job-selected.png';
+
+Overview 탭은 전체 Job 현황을 한눈에 파악할 수 있는 화면입니다.
+
+<Image src={overviewJobsMap} alt="Overview 탭 전체 화면 — 상단에 Phase별 Job 카드 목록, 하단에 세계 지도 위 Job 위치 마커" />
+
+## 화면 구성
+
+- **상단 — Job 목록**: 전체 Job이 현재 진행 중인 Phase에 따라 분류되어 표시됩니다.
+  - **Phase 1 (PRE-INSTALLATION)**, **Phase 2 (ON-SITE INSTALLATION)**, **Phase 3 (EXPANSION)** 세 개의 열로 나뉩니다.
+  - 각 Job 카드에는 현재 진행 중인 Step 이름이 표시되어 작업 상태를 즉시 확인할 수 있습니다.
+- **하단 — 지도 뷰**: 세계 지도 위에 각 Job의 서비스 구역 위치가 마커로 표시됩니다.
+  - 지도에서 마커를 클릭하여 해당 Job을 선택할 수도 있습니다.
+
+## Job 선택
+
+<Image src={overviewJobSelected} alt="Overview 탭에서 Job 선택 시 — 해당 지역으로 지도가 확대되고 Workspace 이동 버튼이 표시됨" />
+
+Job 카드 또는 지도 마커를 클릭하여 Job을 선택하면:
+
+- 해당 서비스 구역으로 지도가 자동으로 확대됩니다.
+- 선택된 Job에 대해 **Workspace** 탭으로 이동하는 버튼이 표시됩니다.
+
+:::tip
+Overview 탭에서 전체 현황을 파악한 뒤, 작업할 Job을 선택하여 Workspace 탭으로 이동하는 것이 일반적인 흐름입니다.
+:::

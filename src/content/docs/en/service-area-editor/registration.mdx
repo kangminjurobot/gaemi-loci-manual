@@ -1,0 +1,105 @@
+---
+title: Service Area Registration
+description: A step-by-step guide to registering a robot service area using the Service Area Editor.
+---
+
+import { Image } from 'astro:assets';
+import imgFullView from '../../../../assets/screenshots/service-area-editor/sae-full-view.webp';
+import imgAddressSearch from '../../../../assets/screenshots/service-area-editor/sae-address-search.webp';
+import imgLocationSelect from '../../../../assets/screenshots/service-area-editor/sae-location-select.webp';
+import imgFormInput from '../../../../assets/screenshots/service-area-editor/sae-form-input.webp';
+import imgSaveSuccess from '../../../../assets/screenshots/service-area-editor/sae-save-success.webp';
+import imgBridgeServerLogin from '../../../../assets/screenshots/service-area-editor/sae-bridge-server-login.webp';
+import imgRobotZoneConfig from '../../../../assets/screenshots/service-area-editor/sae-robot-zone-config.webp';
+import imgReturnLoci from '../../../../assets/screenshots/service-area-editor/sae-return-loci.webp';
+import imgCompleteStep from '../../../../assets/screenshots/service-area-editor/sae-complete-step.webp';
+
+## Registration Procedure
+
+### 1. Full View
+
+<Image src={imgFullView} alt="Service Area Editor full view — input form on the left, satellite map on the right" />
+
+The screen above is shown when you enter the Service Area Editor.
+
+- **Left panel** — Contains the search, location, and metadata input forms.
+- **Right area** — Displays the VWorld satellite map with a "Select Location" message in the center.
+
+### 2. Address Search
+
+<Image src={imgAddressSearch} alt="Entering an address in Search by Address moves the map to the matched location" />
+
+Search for the target area in the **Search by Address** input at the top left of the left panel.
+When you select a search result, the map automatically moves to that location and a radius circle is drawn around the selected point.
+
+:::tip
+If address search does not return the expected result, you can zoom in or out of the map manually to navigate to the desired location.
+:::
+
+### 3. Selecting the Exact Location
+
+<Image src={imgLocationSelect} alt="Left-clicking on the map to choose the exact location" />
+
+**Left-click** on the map to pin the exact center point of the service area.
+The coordinates of the clicked point are automatically filled into the **Latitude** and **Longitude** fields in the left panel.
+
+To change the location, simply click a different point on the map.
+
+### 4. Entering Information
+
+<Image src={imgFormInput} alt="Service Area metadata input form — Name, Code, Category, Environment" />
+
+Fill in the Service Area details in the left panel.
+
+| Field | Description | How to enter |
+|------|------|-----------|
+| **Name** | Service area name | Use the format `(region)_(specific place)`. Example: `magok_exptest`. |
+| **Code** | Unique identifier code | Use the first letters of the words in the Name. Example: If Name is `magok_exptest`, use something like `MEA` — the first two letters come from the Name and the last letter is chosen freely. |
+| **Category** | Area type | Choose one of `PARK`, `SCHOOL`, or `URBAN`. |
+| **Environment** | Target server | Choose which server the Service Area should be created on. |
+
+The **Environment** options are:
+
+| Option | Description |
+|------|------|
+| **ALL** | Adds the area to the MAIN, PBE, and DEV servers. **Select ALL by default.** |
+| **MAIN** / **PBE** / **DEV** | Adds the area only to the selected server. |
+| **TEST** | Runs a test only, without adding the area to any real server. |
+
+Once every field is filled in, click the **Save Service Area** button at the bottom.
+
+### 5. Confirming a Successful Save
+
+<Image src={imgSaveSuccess} alt="Saved Successfully message and Robot Zone Config button" />
+
+On a successful save, a green check icon appears together with a **Saved Successfully** message.
+Click the yellow **Robot Zone Config** button that appears below to move to the Bridge Server page.
+
+### 6. Bridge Server Login
+
+<Image src={imgBridgeServerLogin} alt="GAEMI Bridge Server login page" />
+
+You need to sign in when the Bridge Server page opens.
+Enter the same email and password you use for FMS, then click the **Login** button.
+
+### 7. Configuring the Robot's Service Area
+
+<Image src={imgRobotZoneConfig} alt="Changing the Service Area for each robot unit on the Bridge Server" />
+
+After logging in, change the robot's Service Area.
+
+1. Search for the target robot unit in the area outlined in <span style="color: #4a90d9">**blue**</span>.
+2. Select the Service Area you just added in the area outlined in <span style="color: #ff00ff">**magenta**</span>.
+
+### 8. Returning to GAEMI Loci
+
+<Image src={imgReturnLoci} alt="Visited status shown after returning to GAEMI Loci" />
+
+When you return to the GAEMI Loci page, the Robot Zone Config button now shows a **(Visited)** marker, and the guidance message changes to "Click **Complete Step** to proceed".
+
+### 9. Completing the Step
+
+<Image src={imgCompleteStep} alt="Complete Step button activated" />
+
+Once everything is done, the **Complete Step** button at the top right turns green and becomes active.
+Clicking it marks Step 0 as complete and lets you move on to the next Step.

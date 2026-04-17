@@ -1,0 +1,128 @@
+---
+title: Upload
+description: Step-by-step guide for uploading map data to Firebase Storage.
+---
+
+import { Image } from 'astro:assets';
+import imgDashboardEntry from '../../../../assets/screenshots/file-manager/upload-initial-dashboard-entry.webp';
+import imgDataReady from '../../../../assets/screenshots/file-manager/upload-data-ready.webp';
+import imgConfirmDialog from '../../../../assets/screenshots/file-manager/upload-confirm-dialog.webp';
+import imgInProgress from '../../../../assets/screenshots/file-manager/upload-in-progress.webp';
+import imgComplete from '../../../../assets/screenshots/file-manager/upload-complete.webp';
+import imgChangeServiceArea from '../../../../assets/screenshots/file-manager/upload-change-service-area.webp';
+import imgSelectLocalTime from '../../../../assets/screenshots/file-manager/upload-select-local-time.webp';
+import imgEmptyState from '../../../../assets/screenshots/file-manager/upload-empty-state.webp';
+import imgSelectServiceArea from '../../../../assets/screenshots/file-manager/upload-select-service-area.webp';
+
+## Upload procedure
+
+This is the flow when entering the Up/Downloader tab from the Dashboard to work on the **2D/3D Map Uploader** Step.
+
+### 1. First screen after entry
+
+<Image src={imgDashboardEntry} alt="First screen when entering the Up/Downloader tab from the Dashboard" />
+
+When you enter from the Dashboard, the **Standard Upload** panel on the right is already populated with the data to upload.
+The Remote Repository area is shown on the left, and the actual upload configuration is done on the right panel.
+
+### 2. Verify the upload data
+
+<Image src={imgDataReady} alt="Upload data configured and ready" />
+
+On the right panel you can see that the following items are configured:
+
+- **Workstation Storage** — displays the currently selected Service Area.
+- **HD Map (3D)** — a list of 3D map files. A green check icon next to each file means it has been recognized successfully.
+  - `localization_map.bin.zst`, `hd_map.pcd`, `lidar_map_tf.yaml`, `map_meta_data.yaml`
+- **Charge Station** — the charge station configuration file (`charge_station.yaml`).
+- **Navigation Map (2D)** — 2D navigation map data. A time is selected in the **Local Time** dropdown, and the items to upload are checked in the edge list below.
+
+After confirming that all items are correct, click the **Upload** button at the bottom.
+
+### 3. Confirmation popup
+
+<Image src={imgConfirmDialog} alt="Upload confirmation popup" />
+
+A confirmation popup appears showing the upload targets and the Service Area name.
+After verifying the information shown, click **OK** to start the upload.
+
+### 4. Upload in progress
+
+<Image src={imgInProgress} alt="Upload in progress — showing the Overall progress and the current file progress" />
+
+Once the upload begins, two progress bars are displayed.
+
+- **Overall** (green bar) — shows the overall upload progress (%) and elapsed time.
+- **Current file** (purple bar) — shows the name of the data currently being processed (for example, `Processing edge: me_10-me_11`) and its individual progress.
+
+Expanding the **Event Log** at the bottom shows detailed per-step logs.
+
+:::note
+Do not refresh the page or close the tab while the upload is in progress.
+:::
+
+### 5. Upload complete
+
+<Image src={imgComplete} alt="Upload complete screen — showing the file list and the elapsed time" />
+
+When the upload completes, a green **Complete** card is shown, where you can review the following information:
+
+- **Elapsed time** — the total elapsed time is displayed in `mm:ss` format at the upper right.
+- **Processing results** — the number of files copied (Copied), generated (Generated), and uploaded (Uploaded) are shown.
+- **File list** — the names of the uploaded files are listed.
+
+To upload different data, click the **Start New** button at the bottom.
+
+---
+
+## Troubleshooting
+
+<details>
+<summary>**When the configured dataset is not the one you want**</summary>
+
+If the automatically configured Service Area or Local Time does not match what you intended, change them in the following order.
+
+#### 1. Change the Service Area
+
+<Image src={imgChangeServiceArea} alt="Location of the Service Area selection button and the Load Dataset button" />
+
+1. Open the **Service Area** dropdown highlighted by the <span style="color: #a855f7">**purple outline**</span> and select the Service Area you want.
+2. Click the **Load Dataset** button highlighted by the <span style="color: #ff00ff">**magenta outline**</span>, and the dataset corresponding to the selected Service Area is reloaded below.
+
+#### 2. Select Local Time
+
+<Image src={imgSelectLocalTime} alt="Selecting from the Local Time dropdown" />
+
+In the Navigation Map (2D) section, open the **Local Time** dropdown highlighted by the <span style="color: #a855f7">**purple outline**</span> and select the time you want.
+Changing the time automatically refreshes the edge list for that point in time.
+
+#### 3. After selection
+
+<Image src={imgDataReady} alt="Data configured — click the Upload button" />
+
+After verifying that the changed data is correct, click the **Upload** button.
+The subsequent steps are the same as starting from [3. Confirmation popup](#3-confirmation-popup).
+
+</details>
+
+<details>
+<summary>**When a refresh has reset the data**</summary>
+
+Refreshing the page resets all configuration and leaves it empty. Reconfigure the data in the following order.
+
+#### 1. Initial screen
+
+<Image src={imgEmptyState} alt="Empty screen after a refresh — no data configured" />
+
+Because no Service Area has been selected, the HD Map, Charge Station, and Navigation Map items are not shown.
+
+#### 2. Select a Service Area
+
+<Image src={imgSelectServiceArea} alt="Selecting a Service Area and clicking Load Dataset from the empty state" />
+
+1. Open the **Service Area** dropdown highlighted by the <span style="color: #a855f7">**purple outline**</span> and select the Service Area you want.
+2. Click the **Load Dataset** button highlighted by the <span style="color: #ff00ff">**magenta outline**</span>, and the dataset for that Service Area is loaded.
+
+The subsequent steps are the same as starting from [2. Select Local Time](#2-select-local-time) in the "When the configured dataset is not the one you want" section above.
+
+</details>

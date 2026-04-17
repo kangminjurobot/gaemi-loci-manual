@@ -1,0 +1,136 @@
+---
+title: 2D 맵 에디터
+description: 내비게이션 에디터에서 타일맵 래스터 이미지를 직접 편집하는 기능입니다.
+sidebar:
+  order: 3
+---
+
+import { Image } from 'astro:assets';
+import screenshotFull from '../../../assets/screenshots/path-editor/path-editor1.webp';
+import screenshotPanoramaPanel from '../../../assets/screenshots/path-editor/path-editor-panorama-viewer-panel.webp';
+import screenshotPanoramaViewer from '../../../assets/screenshots/path-editor/path-editor-panorama-viewer.webp';
+import screenshotTrajectory from '../../../assets/screenshots/path-editor/path-editor-trajectory-no-point-selected.webp';
+import screenshotTileSelect from '../../../assets/screenshots/path-editor/path-editor-datasource-dialog-tile-select.webp';
+
+2D 맵 에디터는 내비게이션 에디터 내에서 **GeoTIFF 타일맵 래스터 이미지**를 직접 편집할 수 있는 도구입니다. 세그멘테이션 맵, 충돌 맵, 낙하 맵 등의 네비게이션 맵을 수정하는 데 사용됩니다.
+
+## 화면 구성
+
+<Image src={screenshotFull} alt="내비게이션 에디터 전체 화면 — 좌측 레이어 패널, 중앙 지도, 우측 편집 패널" />
+
+- **좌측 패널**: 레이어 목록에서 편집할 타일맵 선택 (연필 아이콘 클릭)
+- **중앙 영역**: OpenLayers 지도 위에 래스터 이미지를 오버레이하여 직접 편집
+- **우측 패널**: 편집 도구, 색상 선택, 브러시 설정, 파노라마 뷰어
+
+## 편집 시작/종료
+
+좌측 레이어 패널의 GeoTIFF 레이어에서 **연필 아이콘** (<i className="fas fa-pencil-alt"></i>)을 클릭하면 편집 모드가 시작됩니다.
+
+| 동작 | 방법 |
+|------|------|
+| **편집 시작** | 좌측 패널에서 .tif 레이어의 연필 아이콘 클릭 |
+| **편집 종료** | Save BMP 저장 후 자동 종료 또는 Stop Edit 클릭 |
+| **레이어 전환** | 다른 레이어의 연필 아이콘 클릭 시 현재 편집 저장 후 전환 |
+
+## 드로잉 도구
+
+우측 패널 상단에서 도구를 선택합니다. 키보드 단축키로도 전환 가능합니다.
+
+| 도구 | 아이콘 | 단축키 | 기능 |
+|------|--------|--------|------|
+| **Pen** | <i className="fas fa-pen-nib"></i> | `P` | 베지어 곡선으로 자유롭게 그리기. 드래그로 곡률 조절 |
+| **Polygon** | <i className="fas fa-draw-polygon"></i> | `O` | 다각형 영역을 클릭으로 꼭짓점 지정 후 채우기 |
+| **Circle** | <i className="fas fa-circle"></i> | `C` | 원형 스탬프로 클릭한 위치에 원 그리기 |
+| **Move** | <i className="fas fa-hand-paper"></i> | `Space` | 지도 이동 모드 (그리기 없음) |
+
+### Pen 도구 (베지어)
+
+- 지도에서 클릭하여 포인트를 추가합니다
+- **드래그**로 베지어 핸들을 조절하여 곡선을 만들 수 있습니다
+- **우클릭**으로 그리기를 완료합니다
+- **Esc**로 취소합니다
+- Stroke Width 슬라이더로 선 굵기를 조절합니다 (1~100px)
+
+### Polygon 도구
+
+- 지도에서 클릭하여 꼭짓점을 순서대로 추가합니다
+- **우클릭**으로 폴리곤을 닫고 내부를 채웁니다
+- **Esc**로 취소합니다
+
+### Circle 도구
+
+- 지도에서 클릭하면 해당 위치에 원이 찍힙니다
+- Circle Size 슬라이더로 크기를 조절합니다 (2~200px)
+- 빠른 프리셋:
+
+| 프리셋 | 크기 | 용도 |
+|--------|------|------|
+| **Bollard** | 5px | 볼라드 크기 장애물 |
+| **Lamp** | 10px | 가로등 크기 장애물 |
+| **Post** | 20px | 기둥 크기 장애물 |
+| **Large** | 50px | 대형 장애물 |
+
+## 색상 선택
+
+### 기본 색상 프리셋
+
+| 색상 | RGB |
+|------|-----|
+| **White** | (255, 255, 255) |
+| **Black** | (0, 0, 0) |
+| **Red** | (255, 0, 0) |
+| **Green** | (0, 255, 0) |
+| **Blue** | (0, 0, 255) |
+
+프리셋 옆 **커스텀 색상 피커**로 임의의 색상을 선택할 수도 있습니다.
+
+### 세그멘테이션 라벨 색상
+
+**Segmentation Labels** 토글을 펼치면 세그멘테이션 클래스별 색상을 바로 선택할 수 있습니다:
+
+| 라벨 | 색상 | 용도 |
+|------|------|------|
+| **runway** | 녹색 | 주행 가능 경로 |
+| **curb** | 보라 | 연석 |
+| **road** | 빨강 | 차도 |
+| **cross-walk** | 연두 | 횡단보도 |
+| **braille-block** | 노랑 | 점자 블록 |
+| **cement** | 청록 | 시멘트 |
+| **building** | 올리브 | 건물 |
+| **vegetation** | 초록 | 식생 |
+| **docking-station** | 파랑 | 도킹 스테이션 |
+| **no-information** | 검정 | 정보 없음 |
+
+총 26개 세그멘테이션 클래스가 정의되어 있습니다.
+
+## Undo / Redo
+
+| 동작 | 단축키 | 설명 |
+|------|--------|------|
+| **Undo** | `Ctrl + Z` | 마지막 그리기 작업 취소 |
+| **Redo** | `Ctrl + Shift + Z` | 취소한 작업 다시 적용 |
+
+## 내보내기 (Save BMP)
+
+편집 완료 후 **Save BMP** 버튼을 클릭하면:
+
+1. 현재 캔버스를 BMP 형식으로 변환
+2. 서버의 데이터셋 경로에 저장
+3. 편집 모드 자동 종료
+
+:::note
+Save BMP는 데이터셋을 먼저 열어야 활성화됩니다. 데이터셋 경로가 설정되지 않으면 버튼이 비활성화됩니다.
+:::
+
+## 실제 사용 흐름
+
+```
+1. [Open Dataset] → 서버/로컬에서 타일맵 데이터 로드
+2. 좌측 패널에서 편집할 .tif 레이어의 연필 아이콘 클릭 → 편집 모드 진입
+3. 우측 패널에서 도구 선택 (Pen/Polygon/Circle)
+4. 색상 선택 (프리셋, 커스텀, 또는 세그멘테이션 라벨)
+5. 지도 위에서 직접 그리기
+   - Trajectory 포인트 클릭 → 파노라마로 현장 확인하며 편집
+6. 실수 시 Undo (Ctrl+Z)
+7. [Save BMP] → BMP 파일로 저장 및 편집 종료
+```

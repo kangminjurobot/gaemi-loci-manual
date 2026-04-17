@@ -1,0 +1,117 @@
+---
+title: 지오레퍼런싱
+description: SLAM 맵을 GPS 좌표에 정렬하는 방법입니다.
+sidebar:
+  order: 3
+---
+
+import { Image } from 'astro:assets';
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import screenshotFull from '../../../assets/screenshots/map-correction/georeferencing_base_image.png';
+import georeferencing from '../../../assets/screenshots/map-correction/georeferencing.gif';
+import addGcpButton from '../../../assets/screenshots/map-correction/georeferencing_Add_GCP_button.png';
+import addGcpButtonAfter from '../../../assets/screenshots/map-correction/georeferencing_Add_GCP_button_after.png';
+import addGcpPointcloud from '../../../assets/screenshots/map-correction/georeferencing_add_gcp_pointcloud.png';
+import addGcpSatelliteMap from '../../../assets/screenshots/map-correction/georeferencing_add_gcp_satellite_map.png';
+import calculateTransform from '../../../assets/screenshots/map-correction/georeferencing_calculate_transform.png';
+import saveYaml from '../../../assets/screenshots/map-correction/georeferencing_save_yaml.png';
+import pinKeyframe from '../../../assets/screenshots/map-correction/pin_keyframe.gif';
+
+지오레퍼런싱은 SLAM으로 생성된 **로컬 좌표계 맵**을 **실제 GPS 좌표계**에 정렬하는 과정입니다. 3D 맵 에디터의 **Georeference 탭**에서 수행합니다.
+
+## 화면 구성
+
+<Image src={screenshotFull} alt="지오레퍼런싱 — 3D 뷰포트와 위성 지도 분할 화면" />
+
+- **좌측**: 3D 포인트클라우드 뷰포트 + 좌측 패널(GeoreferencePanel)
+- **우측**: 위성 지도 — 지오레퍼런스 모드 활성화 시 분할 표시
+
+## 작업 순서
+
+GCP 추가부터 변환 계산까지의 전체 흐름입니다.
+
+<img src={georeferencing.src} alt="지오레퍼런싱 — GCP 추가부터 변환 계산까지의 전체 흐름" />
+
+:::tip
+`{site_name}` 디렉토리에 `map_meta_data.yaml` 파일이 있으면 EPSG 코드와 Yaw 값이 자동으로 로드됩니다.
+:::
+
+<Steps>
+
+1. **Add GCP** 버튼을 클릭하여 GCP 추가 모드 진입
+   - 버튼에 현재 GCP 수가 표시됩니다: `Add GCP (0/4)`
+   - 모드가 활성화되면 버튼이 **Stop (0/4)** 으로 변경됩니다
+
+   <Image src={addGcpButton} alt="Add GCP 버튼 클릭 전" />
+   <Image src={addGcpButtonAfter} alt="Add GCP 버튼 클릭 후 — Stop 모드로 변경" />
+
+2. 3D 뷰포트에서 **Shift + 좌클릭**으로 포인트클라우드의 기준점을 선택
+   - 클릭한 포인트의 **X, Y, Z** 좌표가 자동으로 입력됩니다
+   - 건물 모서리, 도로 경계, 특징적인 구조물 등 명확히 식별 가능한 지점을 선택하세요
+
+   <Image src={addGcpPointcloud} alt="3D 뷰포트에서 포인트클라우드 기준점 선택" />
+
+3. 우측 위성 지도에서 **Shift + 좌클릭**으로 동일한 지점을 선택
+   - 클릭한 위치의 **위도(Lat), 경도(Lon)** 좌표가 자동으로 입력됩니다
+   - GCP가 확정되고 목록에 추가됩니다
+
+   <Image src={addGcpSatelliteMap} alt="위성 지도에서 동일 지점의 GPS 좌표 선택" />
+
+4. 1~3단계를 반복하여 최소 **4개** 이상의 GCP를 추가
+
+5. **Calculate Transformation** 버튼을 클릭하여 변환 계산 실행
+   - 변환 옵션: **Yaw Only (2D rotation)** — 회전을 수평 방향으로만 제한 / **Fix Z** — 높이 이동 고정
+   - 계산 중 버튼이 **Calculating...** 으로 변경됩니다
+
+   <Image src={calculateTransform} alt="Calculate Transformation 버튼과 변환 옵션" />
+
+6. 결과를 확인하고 **Save YAML** 또는 **Export** 버튼으로 저장
+
+   <Image src={saveYaml} alt="변환 결과 확인 및 Save YAML / Export 버튼" />
+
+</Steps>
+
+:::caution
+GCP 기준점들이 일직선에 가까운 경우(공선 배치) 정확도가 낮아집니다. 면적 내에 분산 배치하는 것이 좋습니다.
+:::
+
+## Pin Keyframe
+
+GCP 지오레퍼런싱을 통해 맵 전체를 GPS 좌표계에 정렬한 후에도, SLAM 맵 자체의 구조적 오차로 인해 **특정 구간이 위성 지도와 맞지 않는 경우**가 발생할 수 있습니다. Pin Keyframe은 이러한 국소적 불일치를 **키프레임 단위로 보정**하는 기능입니다.
+
+위성 지도를 참조하면서 어긋난 키프레임을 올바른 위치로 이동시키면, 내부적으로 다음 3단계가 자동으로 수행됩니다:
+
+1. 이동한 위치에 **Prior Factor** 추가
+2. **그래프 최적화** 실행 — 보정 효과가 주변 키프레임으로 전파
+3. Prior Factor **자동 제거** — 이후 추가 보정 시 과도한 제약 방지
+
+이를 통해 해당 지점의 보정이 인접 영역으로 자연스럽게 전파되면서도, 이후 다른 위치를 보정할 때 기존 핀이 제약 조건으로 남지 않습니다.
+
+<img src={pinKeyframe.src} alt="Pin Keyframe — 키프레임 선택부터 보정 전파까지의 전체 흐름" />
+
+### 사용 방법
+
+위성 지도에서 맵이 어긋난 구간을 확인한 뒤, 3D 뷰포트에서 `Ctrl + 좌클릭`으로 해당 키프레임을 선택하여 올바른 위치로 이동합니다. 맵 전체가 아닌 부분적으로 틀어진 영역을 세밀하게 교정할 때 유용합니다.
+
+## 실제 사용 흐름
+
+```
+[지오레퍼런싱 워크플로우]
+1. [Add GCP] → GCP 추가 모드 진입
+2. 3D 뷰포트에서 Shift + 좌클릭 → 포인트클라우드 기준점 선택
+3. 위성 지도에서 Shift + 좌클릭 → 동일 지점 GPS 좌표 선택
+4. 1~3 반복하여 GCP 4개 이상 추가
+5. [Calculate Transformation] → 변환 계산
+6. 결과 확인 후 [Save YAML] 또는 [Export] → 저장
+7. 위성 지도와 어긋난 구간 확인 → Ctrl + 좌클릭으로 키프레임 보정 (Pin Keyframe)
+8. 필요한 구간마다 7 반복
+```
+
+## 변환 결과 저장
+
+| 버튼 | 기능 |
+|------|------|
+| **Save YAML** | 서비스 구역 루트 및 `hd_map/georeferenced/` 디렉토리에 YAML 저장 |
+| **Export** | YAML 파일을 로컬 PC로 다운로드 |
+
+저장된 YAML(`map_meta_data.yaml`)에는 EPSG 코드, Yaw, Translation 정보가 포함됩니다. 다음 번 맵 로드 시 자동으로 읽어옵니다.

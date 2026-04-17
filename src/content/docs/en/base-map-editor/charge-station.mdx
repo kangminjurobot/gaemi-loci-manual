@@ -1,0 +1,168 @@
+---
+title: Charge Station Installation
+description: Guides you through setting the charge station ID and registering its 3D location.
+sidebar:
+  order: 2
+---
+
+import { Image } from 'astro:assets';
+import screenshotIdAcquire from '../../../../assets/screenshots/base-map-editor/charge-station-01-id-acquire.png';
+import screenshotIdCheck from '../../../../assets/screenshots/base-map-editor/charge-station-02-id-check.png';
+import screenshotIdSet from '../../../../assets/screenshots/base-map-editor/charge-station-03-id-set.png';
+import screenshotIdSuccess from '../../../../assets/screenshots/base-map-editor/charge-station-04-id-success.png';
+import screenshotOpen from '../../../../assets/screenshots/base-map-editor/charge-station-05-open.png';
+import screenshotPopup from '../../../../assets/screenshots/base-map-editor/charge-station-06-popup.png';
+import screenshotServiceArea from '../../../../assets/screenshots/base-map-editor/charge-station-07-service-area.png';
+import screenshotDatasetLoaded from '../../../../assets/screenshots/base-map-editor/charge-station-08-dataset-loaded.png';
+import screenshotLoadAllPcd from '../../../../assets/screenshots/base-map-editor/charge-station-09-load-all-pcd.png';
+import screenshotLoading from '../../../../assets/screenshots/base-map-editor/charge-station-10-loading.png';
+import screenshotFindStation from '../../../../assets/screenshots/base-map-editor/charge-station-11-find-station.png';
+import screenshotAddButton from '../../../../assets/screenshots/base-map-editor/charge-station-12-add-button.png';
+import screenshot3dModel from '../../../../assets/screenshots/base-map-editor/charge-station-13-3d-model.png';
+import screenshotFineAdjust from '../../../../assets/screenshots/base-map-editor/charge-station-14-fine-adjust.gif';
+import screenshotEdgeSetting from '../../../../assets/screenshots/base-map-editor/charge-station-15-edge-setting.png';
+import screenshotAddConfirm from '../../../../assets/screenshots/base-map-editor/charge-station-16-add-confirm.png';
+import screenshotComplete from '../../../../assets/screenshots/base-map-editor/charge-station-17-complete.png';
+
+Charge station installation consists of two main stages. First, **set a unique ID** on the charge station itself, then **register its 3D position and orientation in space** using mapping data (PCD). This information is used when the robot automatically docks with the charge station.
+
+## Setting the charge station ID
+
+Set the ID while the robot is physically connected (charging) to the charge station. The ID is the value that uniquely identifies each charge station and must not collide anywhere in the system.
+
+### 1. Acquire the charge station ID
+
+<Image src={screenshotIdAcquire} alt="Checking the physical ID on the label attached to the charge station" />
+
+Retrieve the ID currently configured on the charge station. Either the initial default value or an ID previously set through software is displayed.
+
+### 2. Check the current ID
+
+<Image src={screenshotIdCheck} alt="Screen for checking the currently configured charge station ID by clicking the Get ID button" />
+
+Clicking the **Get ID** button retrieves the ID currently configured on the charge station. For a newly installed charge station, a default value may be shown or the ID may be unset.
+
+### 3. Set the ID
+
+<Image src={screenshotIdSet} alt="Screen for entering the desired charge station ID in the input field and clicking the Set ID button" />
+
+Enter the desired ID in the input field and then click the **Set ID** button.
+
+:::caution
+Changing the ID can affect existing configurations that reference the charge station. Change it carefully on production systems.
+:::
+
+### 4. Setting succeeded
+
+<Image src={screenshotIdSuccess} alt="Success message screen indicating that the charge station ID has been set successfully" />
+
+When the ID is set successfully, a success message is shown. We recommend using the **Get ID** button again to confirm the configured ID.
+
+## Setting the charge station location
+
+Use mapping data (PCD) to register the 3D position and orientation of the charge station. Because the robot performs automatic docking based on this information, accurate positioning is critical.
+
+### 1. Load the dataset
+
+<Image src={screenshotOpen} alt="Starting to open a dataset by clicking the Open button on the toolbar" />
+
+Click the **Open** button on the toolbar to load the mapping data.
+
+### 2. Popup window
+
+<Image src={screenshotPopup} alt="Popup window for selecting a dataset" />
+
+A popup window appears so you can select a dataset.
+
+### 3. Select Service Area and Local Time
+
+<Image src={screenshotServiceArea} alt="Clicking the Load Dataset button after selecting Service Area and Local Time" />
+
+Select the **Service Area** where the charge station is installed and the **Local Time** when mapping was performed, then click the **Load Dataset** button.
+
+:::tip
+Choosing data from a time range when the charge station is clearly captured makes the subsequent positioning work easier.
+:::
+
+### 4. Dataset load complete
+
+<Image src={screenshotDatasetLoaded} alt="Screen showing the keyframe list and point cloud after the dataset has been loaded" />
+
+Once the dataset is loaded, the keyframe list is shown in the left panel. Use the **arrow keys (up/down)** to step through keyframes sequentially and inspect their point clouds.
+
+### 5. Load all PCD
+
+<Image src={screenshotLoadAllPcd} alt="Loading the full point cloud by clicking the Load All PCD button" />
+
+If individual keyframes are not enough to locate the charge station, click the **Load All PCD** button to load the full point cloud at once.
+
+:::note
+Loading the full PCD can take time depending on the dataset size. Please wait until the loading completes.
+:::
+
+### 6. Loading
+
+<Image src={screenshotLoading} alt="Full point cloud loading in progress — may take 1 to 2 minutes" />
+
+The full PCD is being loaded. Depending on the data size, this can take **1 to 2 minutes**. Once loading finishes, the entire point cloud is displayed in the 3D viewport.
+
+### 7. Find the charge station
+
+<Image src={screenshotFindStation} alt="Searching for the charge station location in the full point cloud — rotate by mouse drag, zoom by scroll" />
+
+With the full PCD loaded, locate the charge station.
+
+| Operation | Action |
+|------|------|
+| **Left-click drag** | Rotate viewpoint |
+| **Mouse scroll** | Zoom in/out |
+| **Right-click drag** | Pan viewpoint |
+
+:::tip
+Knowing the approximate installation location of the charge station in advance reduces search time. Since charge stations are often installed near walls, searching with wall shapes as a reference is effective.
+:::
+
+### 8. Click Charge+
+
+<Image src={screenshotAddButton} alt="Switching to the charge station add mode by clicking the Charge+ button" />
+
+Clicking the **+Charge** button on the toolbar changes the cursor to a **'+'** shape. In this state, click precisely on the charge station location in the 3D viewport.
+
+### 9. Verify the 3D model
+
+<Image src={screenshot3dModel} alt="The 3D model of the charge station displayed at the clicked location" />
+
+The **3D model** of the charge station appears at the clicked location. Check whether the model's position and orientation match the actual installation.
+
+### 10. Fine adjustment
+
+<img src={screenshotFineAdjust.src} alt="Fine-tuning the position and orientation of the charge station 3D model — Rotation adjusts orientation, Translation moves position" />
+
+Precisely adjust the position and orientation of the charge station model.
+
+| Adjustment | Description |
+|-----------|------|
+| **Rotation** | Adjusts the orientation (angle) of the charge station |
+| **Translation** | Moves the position (coordinates) of the charge station |
+
+:::caution
+The orientation of the charge station must exactly match the actual installation direction. If the orientation is off, **automatic docking may not work correctly**. Adjust carefully while comparing the point cloud and the 3D model.
+:::
+
+### 11. Edge setting
+
+<Image src={screenshotEdgeSetting} alt="Selecting the edge (path segment) where the charge station is installed" />
+
+Select the **Edge (path segment)** where the charge station is installed. An Edge is the path segment the robot uses when approaching the charge station. Specifying the correct Edge lets the robot enter docking along the proper route.
+
+### 12. Confirm Add
+
+<Image src={screenshotAddConfirm} alt="Finalizing charge station registration by clicking Add after confirming the information" />
+
+After verifying the configured position, orientation, and Edge information, click the **Add** button to finalize the charge station registration.
+
+### 13. Complete Step
+
+<Image src={screenshotComplete} alt="Clicking the Complete Step button after registering all charge stations" />
+
+Once all charge stations installed on-site have been registered, click the **Complete Step** button to proceed to the next step.

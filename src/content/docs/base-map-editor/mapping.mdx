@@ -1,0 +1,185 @@
+---
+title: 매핑
+description: 현장에서 로봇을 이용한 Base Map 매핑 절차를 안내합니다.
+sidebar:
+  order: 1
+---
+
+import { Image } from 'astro:assets';
+import screenshotFullScreen from '../../../assets/screenshots/base-map-editor/mapping-01-full-screen.png';
+import screenshotRobotIdInput from '../../../assets/screenshots/base-map-editor/mapping-02-robot-id-input.png';
+import screenshotStartClick from '../../../assets/screenshots/base-map-editor/mapping-03-start-click.png';
+import screenshotWarningMessage from '../../../assets/screenshots/base-map-editor/mapping-04-warning-message.png';
+import screenshotRecording from '../../../assets/screenshots/base-map-editor/mapping-05-recording.png';
+import screenshotInProgress from '../../../assets/screenshots/base-map-editor/mapping-06-in-progress.gif';
+import screenshotEndClick from '../../../assets/screenshots/base-map-editor/mapping-07-end-click.png';
+import screenshotEndResult from '../../../assets/screenshots/base-map-editor/mapping-08-end-result.png';
+import screenshotElevatorPanel from '../../../assets/screenshots/base-map-editor/mapping-09-elevator-panel.png';
+import screenshotElevatorKeypad from '../../../assets/screenshots/base-map-editor/mapping-10-elevator-keypad.png';
+import screenshotFloorInput from '../../../assets/screenshots/base-map-editor/mapping-11-floor-input.png';
+import screenshotSpecialFloor from '../../../assets/screenshots/base-map-editor/mapping-12-special-floor.png';
+import screenshotExitFloor from '../../../assets/screenshots/base-map-editor/mapping-13-exit-floor.png';
+
+현장에 로봇과 충전 스테이션을 설치한 뒤, Base Map을 생성하기 위해 매핑을 진행합니다. 이 문서에서는 일반 환경 매핑과 엘리베이터를 이용한 다층 건물 매핑 절차를 안내합니다.
+
+## 일반 환경 매핑
+
+### 1. 전체 화면 확인
+
+<Image src={screenshotFullScreen} alt="베이스 맵 에디터 매핑 화면 — 상단 툴바 첫 번째 행에 매핑 관련 버튼이 배치된 전체 레이아웃" />
+
+현장 설치 후 베이스 맵 에디터에 접속하면 위와 같은 화면이 표시됩니다. 매핑과 관련된 버튼은 **상단 툴바의 첫 번째 행**에 위치합니다.
+
+:::note
+현장 설치 시에는 첫 번째 행의 버튼만 조작합니다. 하단 행의 버튼(Open, Move, Load All PCD 등)은 매핑 완료 후 데이터 확인 단계에서 사용합니다.
+:::
+
+### 2. 로봇 호기 입력
+
+<Image src={screenshotRobotIdInput} alt="Robot ID 입력란에 로봇 호기를 입력하고 Mapping Start 버튼이 활성화된 상태" />
+
+**Robot ID** 입력란에 로봇 호기를 입력합니다. 호기를 입력하면 **Mapping Start**, **Mapping End** 등 매핑 관련 버튼이 활성화됩니다.
+
+:::tip
+숫자만 입력하면 자동으로 전체 포맷으로 변환됩니다. 예를 들어 `203`을 입력하면 `gaemi-1-g50-0203`으로 자동 변환됩니다.
+:::
+
+### 3. Mapping Start 클릭
+
+<Image src={screenshotStartClick} alt="Mapping Start 버튼 클릭 후 Outdoor/Indoor 매핑 타입 선택 화면" />
+
+**Mapping Start** 버튼을 클릭하면 매핑 타입을 선택할 수 있습니다:
+
+- **Outdoor**: 실외 환경 매핑
+- **Indoor**: 실내 환경 매핑
+
+환경에 맞는 타입을 선택하면 FMS API를 통해 로봇이 "Site Setup" 모드로 전환되며 매핑이 시작됩니다.
+
+### 4. 경고 메시지
+
+<Image src={screenshotWarningMessage} alt="모드 전환 중 발생하는 경고 메시지 팝업" />
+
+매핑 시작 시 로봇의 모드 전환 과정에서 경고 메시지가 표시될 수 있습니다. 이는 모드 전환 중 발생하는 정상적인 동작이므로 별도의 조치 없이 진행하시면 됩니다.
+
+:::note
+경고 메시지가 표시되더라도 매핑 프로세스는 정상적으로 진행됩니다. 메시지가 사라진 후 다음 단계를 계속 진행하세요.
+:::
+
+### 5. Mapping 정상 동작 확인
+
+<Image src={screenshotRecording} alt="매핑이 정상 시작되어 Recording 상태가 표시된 화면" />
+
+매핑이 정상적으로 시작되면 화면에 **"Recording..."** 상태가 표시됩니다.
+
+:::caution
+Recording 표시 후 **약 30초간 센서 캘리브레이션**이 진행됩니다. 이 시간 동안 로봇을 이동시키지 마세요. 캘리브레이션이 완료되기 전에 로봇을 움직이면 매핑 품질이 크게 저하됩니다. 30초 대기 후 로봇 이동을 시작하세요.
+:::
+
+### 6. 매핑 진행
+
+<img src={screenshotInProgress.src} alt="매핑 진행 중 실시간으로 포인트클라우드가 생성되는 모습" />
+
+매핑이 진행되는 동안 실시간으로 포인트클라우드 데이터가 생성되는 과정을 확인할 수 있습니다. 로봇을 매핑할 영역 전체에 걸쳐 자유롭게 이동시키세요.
+
+:::tip
+속도나 이동 방식에 특별한 제약은 없습니다. 매핑할 구역을 빠짐없이 커버하는 것이 중요하므로, 다양한 경로로 자유롭게 주행하세요.
+:::
+
+### 7. Mapping End 클릭
+
+<Image src={screenshotEndClick} alt="매핑 영역 이동 완료 후 Mapping End 버튼을 클릭하는 화면" />
+
+매핑할 영역을 모두 이동한 후 **Mapping End** 버튼을 클릭하여 매핑을 종료합니다.
+
+### 8. Mapping End 결과
+
+<Image src={screenshotEndResult} alt="매핑 종료 후 데이터 업로드가 자동 시작되고 대기 모드로 복귀한 화면" />
+
+매핑이 종료되면 수집된 데이터의 **업로드가 자동으로 시작**됩니다. 업로드가 완료되면 로봇은 대기(Waiting) 모드로 복귀합니다.
+
+:::note
+데이터 업로드는 매핑 데이터의 크기에 따라 시간이 소요될 수 있습니다. 업로드 진행 중에는 로봇의 전원을 끄거나 네트워크 연결을 해제하지 마세요.
+:::
+
+## 엘리베이터 환경 매핑
+
+다층 건물에서 매핑을 진행할 때는 엘리베이터를 이용하여 층 간 이동을 수행합니다. Robot ID가 입력된 상태에서 툴바에 엘리베이터 관련 버튼이 표시됩니다.
+
+### 1. 엘리베이터 조작 패널
+
+<Image src={screenshotElevatorPanel} alt="엘리베이터 조작 패널 — Boarded 버튼과 Start Exit 버튼이 표시된 화면" />
+
+엘리베이터 조작 패널에는 두 개의 주요 버튼이 있습니다:
+
+| 버튼 | 용도 | 사용 시점 |
+|------|------|-----------|
+| **Boarded** | 탑승 완료 알림 | 로봇이 엘리베이터에 **완전히 탑승한 후** 클릭 |
+| **Start Exit** | 하차 시작 알림 | 목적 층 도착 후 **하차를 시작할 때** 클릭 |
+
+:::caution
+- **Boarded**와 **Start Exit** 버튼은 반드시 **엘리베이터 내부에서만** 사용해야 합니다.
+- **Boarded 클릭 후 Start Exit 클릭 전까지** 로봇을 이동시키지 마세요. 이 구간에서 로봇이 움직이면 매핑 데이터의 층 간 정합에 오류가 발생할 수 있습니다.
+:::
+
+### 2. Boarded 후 키패드
+
+<Image src={screenshotElevatorKeypad} alt="Boarded 버튼 클릭 후 표시되는 층 입력 키패드 화면" />
+
+**Boarded** 버튼을 클릭하면 탑승한 층을 입력할 수 있는 키패드가 표시됩니다. 물리 키패드를 시뮬레이션한 직관적인 UI로 구성되어 있습니다.
+
+### 3. 층 입력
+
+<Image src={screenshotFloorInput} alt="층 입력 키패드에서 숫자를 입력하여 층을 지정하는 화면" />
+
+키패드를 사용하여 현재 탑승한 층을 입력합니다:
+
+| 입력 방식 | 설명 | 예시 |
+|-----------|------|------|
+| **지상층** | 숫자만 입력 | `3` (3층) |
+| **지하층** | B + 숫자 | `B3` (지하 3층) |
+| **특수층** | G(Ground) 또는 R(Rooftop) | `G`, `R` |
+| **키보드 입력** | KB 버튼으로 가상 키보드 모드 전환 | 자유 텍스트 입력 |
+
+- **DEL**: 입력한 문자를 하나씩 삭제합니다.
+- **Complete**: 입력을 확정합니다.
+
+:::tip
+엘리베이터에 탑승하기 전에 **미리 층을 입력**해 둘 수 있습니다. 탑승 후에는 **Complete** 버튼만 눌러 빠르게 확정할 수 있어 편리합니다.
+:::
+
+<details>
+<summary>특수층 입력 방법</summary>
+
+<Image src={screenshotSpecialFloor} alt="특수층 입력 화면 — G(Ground), R(Rooftop), KB(키보드) 버튼이 표시된 키패드" />
+
+일반적인 숫자 층 외에 특수한 층 표기를 사용해야 하는 경우:
+
+- **G**: Ground(지상) 층 입력
+- **R**: Rooftop(옥상) 층 입력
+- **KB**: 가상 키보드 모드로 전환하여 자유 텍스트 입력 가능 (예: `M`(Mezzanine), `PH`(Penthouse) 등)
+
+최대 4자리까지 입력할 수 있으며, 키패드 외부를 클릭하면 자동으로 닫힙니다.
+
+</details>
+
+### 4. 하차 층 입력
+
+<Image src={screenshotExitFloor} alt="목적 층 도착 후 하차 층을 입력하는 키패드 화면" />
+
+**Start Exit** 버튼을 클릭하면 동일한 키패드가 표시됩니다. 위의 층 입력 방법과 동일하게 하차할 층을 입력하고 **Complete**를 눌러 확정합니다.
+
+:::tip
+탑승 층 입력과 마찬가지로 **미리 하차 층을 입력**해 둘 수 있습니다. 목적 층에 도착하면 **Complete** 버튼만 눌러 빠르게 진행할 수 있습니다.
+:::
+
+## 매핑 상태 표시
+
+매핑 진행 중 현재 상태를 확인할 수 있도록 다양한 시각적 표시가 제공됩니다:
+
+| 상태 | 표시 | 설명 |
+|------|------|------|
+| **대기 중** | 초록색 체크 아이콘 | 매핑 시작 전 대기 상태 |
+| **요청 중** | 파란색 스피너 | FMS에 모드 전환 요청 중 |
+| **폴링 중** | 노란색 스피너 + Manual Check 버튼 | 모드 전환 대기 중 (5초 간격 자동 폴링) |
+| **기록 중** | 빨간색 핑(Ping) 애니메이션 | 매핑 데이터 기록 중 |
+| **오류** | 빨간색 삼각형 + Retry 버튼 | 오류 발생, 재시도 필요 |

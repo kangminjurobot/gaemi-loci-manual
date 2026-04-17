@@ -1,0 +1,163 @@
+---
+title: Path Editing Features
+description: How to edit nodes, edges, and POIs for the robot's driving path in the Path Editor.
+---
+
+import { Image } from 'astro:assets';
+import screenshotFull from '../../../../assets/screenshots/path-editor/path-editor-full.webp';
+import screenshotMapCanvas from '../../../../assets/screenshots/path-editor/path-editor-map-canvas.webp';
+import screenshotAddEdgeMode from '../../../../assets/screenshots/path-editor/path-editor-add-edge-mode-active.webp';
+import screenshotToolbarButtons from '../../../../assets/screenshots/path-editor/path-editor-toolbar-buttons.webp';
+import screenshotMapLayerPanel from '../../../../assets/screenshots/path-editor/path-editor-map-layer-panel1.webp';
+import screenshotDbLayerPanel from '../../../../assets/screenshots/path-editor/path-editor-db-layer-panel1.webp';
+import screenshotDatasourceDialog from '../../../../assets/screenshots/path-editor/path-editor-datasource-dialog.webp';
+import screenshotDbLayerPanels from '../../../../assets/screenshots/path-editor/path-editor-db-layer-panel.webp';
+import screenshotDbLayerEdit from '../../../../assets/screenshots/path-editor/path_editor_map_edit.webp';
+
+
+The Path Editor is a tool for editing the **topology-based path** the robot will drive. It manages path data in conjunction with a PostgreSQL/PostGIS database.
+
+## Screen Layout
+
+<Image src={screenshotFull} alt="Full Path Editor view — layer panel on the left, map in the center, properties panel on the right" />
+
+- **Left panel**: Layer management, property editing
+- **Center area**: Path overlaid on a satellite map (OpenLayers)
+- **Right panel**: Detailed properties of the selected feature
+
+#### Load DB Layers Button
+
+A green button (with a database icon) that loads the DB layers.
+<Image src={screenshotDbLayerPanels} alt="Layer load panel — DB layers and opacity control" />
+
+- Clicking it fetches layer data from the configured DB connection
+- Shows an error message if no data exists or the connection fails
+
+### DB Layers
+
+<Image src={screenshotDbLayerPanel} alt="DB layer panel — route_node, route_edge, market layer list" />
+
+Data layers loaded from PostgreSQL:
+
+- **route_node**: Path nodes
+- **route_edge**: Path edges
+- **market**: POIs / markers
+
+### Map Layers
+
+Use Open in the Tile Map to load the desired map onto the map list.
+<Image src={screenshotMapLayerPanel} alt="Map layer panel — GeoTIFF raster map layers and opacity control" />
+
+## Editing Modes and Keyboard Shortcuts
+
+<Image src={screenshotToolbarButtons} alt="Path Editor toolbar — editing mode buttons (Edit/Node/POI/Delete)" />
+
+<Image src={screenshotMapCanvas} alt="Path Editor map canvas — node/edge editing mode" />
+
+Switch between the following modes in the top toolbar. You can also activate each mode with a keyboard shortcut, and only one mode is active at a time.
+
+| Mode | Shortcut | Color | Function |
+|------|--------|------|------|
+| **Edit Mode** | `Q` | Orange | Select and edit existing nodes/edges |
+| **Node Mode** | `W` | Cyan | Add new nodes and connect edges |
+| **POI Mode** | `E` | Pink | Add Points of Interest (POI) |
+| **Delete Mode** | `R` | Red | Delete nodes/edges/POIs |
+| **Cancel/Deselect** | `Escape` | — | Cancel the current selection |
+
+## Button States and Interaction
+
+Each mode button has different colors for the **inactive (default)** and **active** states.
+
+| State | Appearance |
+|------|------|
+| **Inactive** | Dark background, gray text (`border-white/10 bg-white/5 text-gray-400`) |
+| **Active** | Mode-color background + white text + " ON" suffix on the label |
+| **Hover** | Slightly brighter background (`hover:bg-[#252525] hover:text-white`) |
+
+For example, when POI Mode is active the button shows **"POI Mode ON"** and is highlighted in pink.
+
+<Image src={screenshotAddEdgeMode} alt="Add Edge mode active — canvas while connecting an edge" />
+
+### Edit Mode (`Q`)
+
+Select existing nodes and edges to modify them.
+
+- **Move node**: Drag a node to change its position
+- **Select edge**: Click an edge to edit its properties
+- **Multi-select**: Ctrl + click to select multiple features
+- When Edit Mode is active, the **Allocate Tag** button is additionally shown in the toolbar
+
+#### Allocate Tag Button
+
+A button that only appears in Edit Mode; it automatically assigns tags to the selected nodes/edges.
+
+| State | Appearance |
+|------|------|
+| **Default** | Orange background + tag icon |
+| **Allocating** | Spinner + "Allocating..." text |
+| **Completed** | Returns to the default state |
+
+### Node Mode (`W`)
+
+Add new nodes.
+
+- Click the desired location on the map to create a node
+- Successive clicks automatically connect the nodes with edges
+
+### POI Mode (`E`)
+
+Add Points of Interest.
+
+- Click on the map to set the POI location
+- Select the POI type (charging station, waiting point, pick-up/drop-off point, etc.)
+
+### Delete Mode (`R`)
+
+Delete the selected feature.
+
+- Clicking a node or edge deletes it
+- Deleting a node also deletes the edges connected to it
+
+## Property Editing
+
+Edit the properties of the selected edge in the right panel:
+
+<Image src={screenshotDbLayerEdit} alt="Editing panel for the selected layer in edit mode" />
+
+| Property | Description | Values |
+|------|------|-----|
+| **Road Type** | Type of road | Sidewalk / Roadway / Crosswalk |
+| **Path Type** | Type of path | Bidirectional / One-way |
+| **Spatial Type** | Spatial type | Outdoor / Indoor / Underground |
+| **Speed** | Speed limit | 0.5 – 2.0 m/s |
+
+
+### Satellite Map Background
+
+Switch the background using the **Satellite selector** on the left side of the toolbar:
+
+| Option | Description |
+|------|------|
+| **Google** | Google satellite imagery |
+| **Kakao** | Domestic high-resolution satellite (default) |
+| **OpenStreetMap** | OpenStreetMap topographic map |
+
+## Typical Workflow
+
+```
+1. [Load DB Layers] → Load existing path data from the DB
+2. Activate Node Mode (W) → Click on the map in order to add nodes
+3. Escape → Exit Node Mode
+4. Activate Edit Mode (Q) → Click/drag nodes to adjust their positions
+5. Click an edge → Set Road Type, Speed, etc. in the right panel
+6. (Optional) Allocate Tag → Automatically assign tags
+7. Data is automatically saved to the DB as soon as it is edited
+```
+
+## Coordinate System
+
+The Path Editor supports the **URDF coordinate system**. Conversion between the robot's local coordinates and GPS coordinates is performed automatically.
+
+## Data Storage
+
+Edited path data is **saved to the DB immediately**. Edits are reflected in real time without a separate save button.

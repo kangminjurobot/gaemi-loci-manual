@@ -1,0 +1,92 @@
+---
+title: Introduction to GAEMI Loci
+description: Introduction and usage guide for the GAEMI Loci HD map generation platform.
+sidebar:
+  order: 1
+---
+
+import { Card, CardGrid, LinkCard, Aside, Badge } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import editorsOverview from '../../../../assets/diagrams/editors-overview.svg';
+import screenshotMain from '../../../../assets/screenshots/app-layout/intro-main.png';
+import screenshotTabLeft from '../../../../assets/screenshots/app-layout/intro-tab-left.png';
+import screenshotTabRight from '../../../../assets/screenshots/app-layout/intro-tab-right.png';
+
+<Image src={screenshotMain} alt="The full GAEMI Loci dashboard — Job list grouped by Phase at the top, with Job markers on a world map at the bottom." />
+
+## What is GAEMI Loci?
+
+For an autonomous mobile robot to drive safely outdoors, it needs a precise High-Definition (HD) map.
+**GAEMI Loci** is a **web platform** that turns data collected in the field by a robot into an HD map, lets you edit it, and deploys it to the robot.
+
+<Aside type="tip">
+GAEMI Loci runs entirely in the browser, so no additional software installation is required.
+</Aside>
+
+## UI Layout
+
+The GAEMI Loci screen is made up of a **sidebar**, **top tabs**, a **main editing area**, and a **bottom status bar**.
+
+### Top-Left Tabs
+
+<Image src={screenshotTabLeft} alt="Top-left tabs — composed of two tabs, Overview and Workspace." />
+
+Switch between the two dashboard view modes: **Overview** and **Workspace**.
+
+- **Overview**: View the status of every Job grouped by Phase at a glance, and locate Jobs on a world map.
+- **Workspace**: Manage the detailed workflow of a selected Job and progress through each Step.
+
+### Top-Right Tabs
+
+<Image src={screenshotTabRight} alt="Top-right tabs — real-time display of Job counts per Phase, HD Maps/Nav Maps counts, and CPU/RAM usage." />
+
+Monitor system status in real time.
+
+| Item | Description |
+|------|------|
+| **P1 / P2 / P3** | Number of Jobs in each Phase (color-coded by Phase) |
+| **HD Maps / Nav Maps** | Number of generated maps |
+| **CPU / RAM** | Server resource usage (visualized as gauge bars) |
+
+## Available Tools
+
+GAEMI Loci provides dedicated editing tools tailored to each stage of HD map generation.
+
+<img src={editorsOverview.src} alt="Overview of the GAEMI Loci editor modules" />
+
+<CardGrid>
+  <Card title="Dashboard" icon="laptop">
+    Create map generation Jobs and review the progress of each stage at a glance.
+  </Card>
+  <Card title="Service Area Editor" icon="pencil">
+    Define and register the service area where the robot will operate on a satellite map. Supports address search and location selection.
+  </Card>
+  <Card title="Navigation Editor" icon="random">
+    Edit the driving paths that the robot will follow. You can add or modify waypoints (nodes) and segments (edges).
+  </Card>
+  <Card title="Base Map Editor" icon="open-book">
+    Review the 3D data collected in the field and register charging stations and ground control points.
+  </Card>
+  <Card title="3D Map Editor / Map Correction" icon="setting">
+    Improve map accuracy with tools for ground control point alignment, path correction, map merging, and obstacle map editing.
+  </Card>
+  <Card title="File Management" icon="seti:folder">
+    Upload mapping data or download completed map files.
+  </Card>
+</CardGrid>
+
+## User Roles
+
+Different tools in GAEMI Loci are used depending on your role.
+
+| Role | Responsibilities | Primary Tools |
+|------|----------|--------------|
+| <Badge text="Biz & Ops" variant="note" /> | Service area registration and workflow management | Dashboard, Service Area Editor |
+| <Badge text="Path Editor" variant="success" /> | Authoring and editing robot driving paths | Navigation Editor |
+| <Badge text="Map Editor" variant="caution" /> | Map editing and quality refinement | Base Map Editor, 3D Map Editor / Map Correction |
+| <Badge text="Inspector" variant="danger" /> | Map quality inspection and approval | Base Map Editor |
+
+<Aside>
+A single account can hold multiple roles. For example, at a small site, one person may handle both path editing and map editing.
+</Aside>
+

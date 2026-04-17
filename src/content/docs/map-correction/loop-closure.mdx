@@ -1,0 +1,110 @@
+---
+title: 루프 클로저 보정
+description: 3D 맵 에디터에서 포즈 그래프 최적화를 통해 SLAM 맵의 정확도를 개선하는 방법입니다.
+sidebar:
+  order: 1
+---
+
+import { Image } from 'astro:assets';
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import screenshotFull from '../../../assets/screenshots/map-correction/map-correction-full.png';
+import screenshotLoopClosureTab from '../../../assets/screenshots/map-correction/map-correction-loop-closure-tab.webp';
+import screenshotManualLoop from '../../../assets/screenshots/map-correction/manual_loop_closure.gif';
+import stepSetTarget from '../../../assets/screenshots/map-correction/loop-closure-step-set-target.png';
+import stepSetSource from '../../../assets/screenshots/map-correction/loop-closure-step-set-source.png';
+import stepGizmoTranslation from '../../../assets/screenshots/map-correction/loop-closure-step-gizmo-translation.png';
+import stepGizmoRotation from '../../../assets/screenshots/map-correction/loop-closure-step-gizmo-rotation.png';
+import stepIcpButton from '../../../assets/screenshots/map-correction/loop-closure-step-icp-button.png';
+import stepIcp from '../../../assets/screenshots/map-correction/loop-closure-step-icp.gif';
+import stepAddFactor from '../../../assets/screenshots/map-correction/loop-closure-step-add-factor.png';
+import stepOptimizeButton from '../../../assets/screenshots/map-correction/loop-closure-step-optimize-button.png';
+import stepOptimizeBefore from '../../../assets/screenshots/map-correction/loop-closure-step-optimize-before.png';
+import stepOptimizeAfter from '../../../assets/screenshots/map-correction/loop-closure-step-optimize-after.png';
+
+루프 클로저 보정은 SLAM 과정에서 발생하는 **누적 오차(drift)**를 교정하는 기능입니다. 3D 맵 에디터의 **Correction 탭**에서 수행합니다.
+
+## 화면 구성
+
+<Image src={screenshotFull} alt="맵 보정 에디터 전체 화면 — 좌측 MapControls 패널, 중앙 3D 뷰포트" />
+
+- **좌측 패널**: 맵 로드/저장(MapControls), 루프 클로저 패널(LoopClosurePanel), 지오레퍼런스 패널
+- **중앙**: 3D 뷰포트 (포인트클라우드 + 포즈 그래프)
+
+## 키프레임 색상 코드
+
+3D 뷰포트에서 키프레임은 색상으로 구분됩니다:
+
+| 색상 | 의미 |
+|------|------|
+| **빨간색** | 타겟 맵 키프레임 (기존 맵) |
+| **초록색** | 소스 맵 키프레임 (병합할 맵) |
+| **시안(cyan)** | 고정된 키프레임 (Prior Factor 적용) |
+
+## 작업 순서
+
+타겟/소스 키프레임 선택부터 기즈모 조정, ICP 정렬, 최적화까지의 전체 흐름입니다.
+
+<img src={screenshotManualLoop.src} alt="수동 루프 클로저 — 타겟/소스 키프레임 선택 후 기즈모로 포즈 정렬 중인 모습" />
+
+<Steps>
+
+1. 3D 뷰어에서 기준이 되는 키프레임을 `Ctrl + 우클릭` → **Set as Target (Red)** 클릭
+
+   <Image src={stepSetTarget} alt="Set as Target — Ctrl+우클릭으로 컨텍스트 메뉴를 열고 Set as Target (Red) 선택" />
+
+2. 보정해야 할 다른 키프레임을 `Ctrl + 우클릭` → **Set as Source (Green)** 클릭
+
+   <Image src={stepSetSource} alt="Set as Source — Ctrl+우클릭으로 컨텍스트 메뉴를 열고 Set as Source (Green) 선택" />
+
+3. `T` / `R` 키로 기즈모 모드를 전환하고, `Ctrl`을 누른 채 기즈모를 드래그하여 위치·방향 수동 조정
+   - `T`: Translate (이동) / `R`: Rotate (회전)
+
+   <Image src={stepGizmoTranslation} alt="Translate 모드 — T키 전환 후 Ctrl+드래그로 키프레임 위치 이동" />
+   <Image src={stepGizmoRotation} alt="Rotate 모드 — R키 전환 후 Ctrl+드래그로 키프레임 방향 회전" />
+
+4. **Run ICP**로 정밀 정렬
+   - **Noise Scale**: Between Factor의 노이즈 값 (기본값: 0.01, 범위: 0 ~ 1)
+   - **Max Distance**: 대응점 최대 거리 (기본값: 5.0m, 범위: 0 ~ 10)
+
+   <Image src={stepIcpButton} alt="Run ICP 버튼 위치" />
+   <img src={stepIcp.src} alt="Run ICP — ICP 알고리즘으로 타겟·소스 키프레임 정밀 정렬" />
+
+5. **Add Loop Factor** 버튼 클릭 (기준 키프레임과 보정할 키프레임을 연결)
+
+   <Image src={stepAddFactor} alt="Add Loop Factor — 기준 키프레임과 보정할 키프레임 사이에 Between Factor 추가" />
+
+6. **Run Optimization** 버튼으로 맵 최적화
+
+   <Image src={stepOptimizeButton} alt="Run Optimization 버튼 위치" />
+
+   <Tabs>
+     <TabItem label="최적화 전">
+       <Image src={stepOptimizeBefore} alt="최적화 전 맵 상태" />
+     </TabItem>
+     <TabItem label="최적화 후">
+       <Image src={stepOptimizeAfter} alt="최적화 후 맵 상태" />
+     </TabItem>
+   </Tabs>
+
+</Steps>
+
+## 실제 사용 흐름
+
+```
+[수동 루프 클로저 워크플로우]
+1. 기준 키프레임을 Ctrl + 우클릭 → Set as Target (Red)
+2. 보정할 키프레임을 Ctrl + 우클릭 → Set as Source (Green)
+3. T / R 키로 기즈모 모드 전환, Ctrl + 드래그로 위치·방향 조정
+4. [Run ICP] → 정밀 정렬
+5. [Add Loop Factor] → 기준·보정 키프레임 연결
+6. [Run Optimization] → 맵 최적화
+7. 결과 확인 후 [Save] → 저장
+```
+
+## 맵 저장
+
+보정된 맵은 Boost 직렬화 + Zstandard 압축 형식(`.bin.zst`)으로 저장됩니다.
+
+좌측 패널 MapControls에서:
+- **Save**: 현재 경로에 즉시 저장
+- **Save As**: 다른 경로로 저장

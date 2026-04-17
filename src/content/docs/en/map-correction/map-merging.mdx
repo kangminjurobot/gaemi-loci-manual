@@ -1,0 +1,113 @@
+---
+title: Map Merging
+description: How to merge an additional map into an existing HD Map.
+sidebar:
+  order: 2
+---
+
+import { Image } from 'astro:assets';
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import screenshotClearButton from '../../../../assets/screenshots/map-correction/map_merging_clear_button.png';
+import screenshotLoadButton from '../../../../assets/screenshots/map-correction/map_merging_load_button.png';
+import screenshotLoadOriginalMapPath from '../../../../assets/screenshots/map-correction/map_merging_load_original_map_path.png';
+import screenshotLoadSourceMapButton from '../../../../assets/screenshots/map-correction/map_merging_load_source_map_button.png';
+import screenshotLoadSourceMapPath from '../../../../assets/screenshots/map-correction/map_merging_load_source_map_path.png';
+import screenshotLoadSourceMapResult from '../../../../assets/screenshots/map-correction/map_merging_load_source_map_result.png';
+import screenshotSaveAsButton from '../../../../assets/screenshots/map-correction/map_merging_save_as_button.png';
+import screenshotSaveEditedFolder from '../../../../assets/screenshots/map-correction/map_merging_save_map_edited_folder.png';
+import screenshotSaveEditedFolderName from '../../../../assets/screenshots/map-correction/map_merging_save_map_edited_folder_name.png';
+import screenshotSaveEditedFolderSelected from '../../../../assets/screenshots/map-correction/map_merging_save_map_edited_folder_selected.png';
+import screenshotWrongCase from '../../../../assets/screenshots/map-correction/map_merging_wrong_case.png';
+import screenshotCorrectionCase from '../../../../assets/screenshots/map-correction/map_merging_correction_case.png';
+
+Map merging is a feature that combines an **existing HD Map (target map)** and an **additional map (source map)** into a single map. When an incorrect registration occurs during Map Aggregation and the map is broken, the user visually identifies the issue, manually loads the maps to combine, and merges them.
+
+<Tabs>
+  <TabItem label="Incorrect registration">
+    <Image src={screenshotWrongCase} alt="Incorrect registration — map damaged due to a failed registration during Map Aggregation" />
+  </TabItem>
+  <TabItem label="After merging and correction">
+    <Image src={screenshotCorrectionCase} alt="After merging and correction — maps correctly registered through manual merging" />
+  </TabItem>
+</Tabs>
+
+## Workflow
+
+:::note
+- `{site_name}` is the service area, and `{local_time}` is the time at which the map started to degrade.
+- From step 4 onward, the process is identical to [loop closure correction](./loop-closure/#workflow).
+:::
+
+<Steps>
+
+1. Visually inspect the map automatically loaded by Map Aggregation to check for incorrect registration, then click the **Clear** button to reset the map.
+
+   <Image src={screenshotClearButton} alt="Clear button — location of the button that resets an incorrectly registered map" />
+
+2. In the left panel, click the **Load Map** button to load the existing HD Map `{site_name}/{local_time}/hd_map/original/original_hd_map.bin.zst`.
+
+   <Image src={screenshotLoadButton} alt="Load Map button — location of the button that loads the existing HD Map" />
+   <Image src={screenshotLoadOriginalMapPath} alt="Load Target Map dialog — selecting the original_hd_map.bin.zst file" />
+
+3. In the left panel, click the **Load Source Map** button to load the additional map to merge `{site_name}/{local_time}/hd_map/original/addition_map.bin.zst`.
+
+   <Image src={screenshotLoadSourceMapButton} alt="Load Source Map button — location of the button that loads the additional map to merge" />
+   <Image src={screenshotLoadSourceMapPath} alt="Load Source Map dialog — selecting the addition_map.bin.zst file" />
+   <Image src={screenshotLoadSourceMapResult} alt="Source Map loaded — Target Map and Source Map displayed together" />
+
+   :::caution
+   After loading the Source Map, you must connect a loop via loop closure correction in the overlapping area between the Target Map and the Source Map. If you run optimization without a loop connection, the maps will not merge correctly.
+   :::
+
+4. In the overlapping area between the target map and the source map, `Ctrl + right-click` the reference keyframe and click **Set as Target (Red)**.
+
+5. `Ctrl + right-click` the keyframe at the same location on the source map and click **Set as Source (Green)**.
+
+6. Toggle the gizmo mode with the `T` / `R` keys, then hold `Ctrl` and drag the gizmo to manually adjust the position and orientation of the source keyframe.
+   - `T`: Translate / `R`: Rotate
+
+7. Perform fine alignment with **Run ICP**.
+   - **Noise Scale**: noise value of the Between Factor (default: 0.01, range: 0 to 1)
+   - **Max Distance**: maximum correspondence distance (default: 5.0 m, range: 0 to 10)
+
+8. Click **Add Loop Factor** (links a keyframe from the target map with one from the source map).
+   - Repeating this for multiple pairs improves alignment accuracy.
+
+9. Optimize the map with the **Run Optimization** button.
+
+10. Review the result and click **Save As** to create the `{site_name}/{local_time}/hd_map/edited/` folder and save the map there.
+
+</Steps>
+
+## Typical Workflow
+
+```
+[Map merging workflow]
+1. Identify an incorrectly registered map → [Clear] → reset the map
+2. [Load Map] → load the existing HD Map (original_hd_map.bin.zst)
+3. [Load Source Map] → load the additional map (addition_map.bin.zst) to merge
+4. Ctrl + right-click in the overlapping area → Set as Target (Red)
+5. Ctrl + right-click on the source map → Set as Source (Green)
+6. Toggle gizmo mode with T / R, then Ctrl + drag to adjust position/orientation
+7. [Run ICP] → fine alignment
+8. [Add Loop Factor] → link keyframes (repeat for multiple pairs)
+9. [Run Optimization] → optimize the map
+10. Review the result, then [Save As] → create and save into {site_name}/{local_time}/hd_map/edited/
+```
+
+## Saving the Map
+
+Corrected maps are saved in Boost serialization + Zstandard compression format (`.bin.zst`).
+
+1. In the left panel, click the **Save As** button.
+   <Image src={screenshotSaveAsButton} alt="Location of the Save As button" />
+2. From the `{site_name}/{local_time}/hd_map/` path, click the create-folder button.
+   <Image src={screenshotSaveEditedFolder} alt="Save Map To dialog — click the create-folder button in the hd_map path" />
+3. Enter the folder name `edited` and click the **Create** button.
+   <Image src={screenshotSaveEditedFolderName} alt="Click Create after entering the folder name edited" />
+4. Select the newly created `edited` folder and click **Select This Folder** to save.
+   <Image src={screenshotSaveEditedFolderSelected} alt="Select the edited folder and click Select This Folder to save" />
+
+:::caution
+Be careful not to overwrite the `original` folder. You must create and save into an `edited` folder separately.
+:::

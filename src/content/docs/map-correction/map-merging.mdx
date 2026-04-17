@@ -1,0 +1,113 @@
+---
+title: 맵 머징
+description: 기존 HD 맵에 추가 맵을 병합하는 방법입니다.
+sidebar:
+  order: 2
+---
+
+import { Image } from 'astro:assets';
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+import screenshotClearButton from '../../../assets/screenshots/map-correction/map_merging_clear_button.png';
+import screenshotLoadButton from '../../../assets/screenshots/map-correction/map_merging_load_button.png';
+import screenshotLoadOriginalMapPath from '../../../assets/screenshots/map-correction/map_merging_load_original_map_path.png';
+import screenshotLoadSourceMapButton from '../../../assets/screenshots/map-correction/map_merging_load_source_map_button.png';
+import screenshotLoadSourceMapPath from '../../../assets/screenshots/map-correction/map_merging_load_source_map_path.png';
+import screenshotLoadSourceMapResult from '../../../assets/screenshots/map-correction/map_merging_load_source_map_result.png';
+import screenshotSaveAsButton from '../../../assets/screenshots/map-correction/map_merging_save_as_button.png';
+import screenshotSaveEditedFolder from '../../../assets/screenshots/map-correction/map_merging_save_map_edited_folder.png';
+import screenshotSaveEditedFolderName from '../../../assets/screenshots/map-correction/map_merging_save_map_edited_folder_name.png';
+import screenshotSaveEditedFolderSelected from '../../../assets/screenshots/map-correction/map_merging_save_map_edited_folder_selected.png';
+import screenshotWrongCase from '../../../assets/screenshots/map-correction/map_merging_wrong_case.png';
+import screenshotCorrectionCase from '../../../assets/screenshots/map-correction/map_merging_correction_case.png';
+
+맵 머징은 **기존 HD 맵(target map)**과 **추가 맵(source map)**을 하나로 합치는 기능입니다. Map Aggregation 과정에서 잘못된 정합이 발생하여 맵이 망가진 경우, 사용자가 시각적으로 이를 판단하고 수동으로 결합할 맵을 로드하여 합치는 과정입니다.
+
+<Tabs>
+  <TabItem label="잘못된 정합">
+    <Image src={screenshotWrongCase} alt="잘못된 정합 — Map Aggregation에서 정합이 실패하여 맵이 손상된 상태" />
+  </TabItem>
+  <TabItem label="머징 후 보정 결과">
+    <Image src={screenshotCorrectionCase} alt="머징 후 보정 — 수동으로 맵을 결합하여 정상적으로 정합된 상태" />
+  </TabItem>
+</Tabs>
+
+## 작업 순서
+
+:::note
+- `{site_name}`은 서비스 지역, `{local_time}`은 맵이 어그러지기 시작한 시간을 선택합니다.
+- 4번부터의 작업은 [루프 클로저 보정](./loop-closure/#작업-순서)과 동일한 방식으로 진행합니다.
+:::
+
+<Steps>
+
+1. Map Aggregation에서 자동으로 읽어온 맵이 잘못 정합되었는지 시각적으로 확인하고, **Clear** 버튼을 클릭하여 맵을 초기화
+
+   <Image src={screenshotClearButton} alt="Clear 버튼 — 잘못 정합된 맵을 초기화하는 버튼 위치" />
+
+2. 좌측 패널에서 **Load Map** 버튼을 클릭하여 기존 HD 맵 `{site_name}/{local_time}/hd_map/original/original_hd_map.bin.zst`을 로드
+
+   <Image src={screenshotLoadButton} alt="Load Map 버튼 — 기존 HD 맵을 로드하는 버튼 위치" />
+   <Image src={screenshotLoadOriginalMapPath} alt="Load Target Map 다이얼로그 — original_hd_map.bin.zst 파일 선택" />
+
+3. 좌측 패널에서 **Load Source Map** 버튼을 클릭하여 결합할 추가 맵 `{site_name}/{local_time}/hd_map/original/addition_map.bin.zst`을 로드
+
+   <Image src={screenshotLoadSourceMapButton} alt="Load Source Map 버튼 — 결합할 추가 맵을 로드하는 버튼 위치" />
+   <Image src={screenshotLoadSourceMapPath} alt="Load Source Map 다이얼로그 — addition_map.bin.zst 파일 선택" />
+   <Image src={screenshotLoadSourceMapResult} alt="Source Map 로드 완료 — Target Map과 Source Map이 동시에 표시된 상태" />
+
+   :::caution
+   Source Map을 로드한 후 반드시 Target Map과 Source Map의 겹치는 영역에서 루프 클로저 보정을 통해 Loop로 연결해야 합니다. Loop 연결 없이 최적화를 실행하면 정상적으로 병합되지 않습니다.
+   :::
+
+4. 타겟 맵과 소스 맵의 겹치는 영역에서 기준 키프레임을 `Ctrl + 우클릭` → **Set as Target (Red)** 클릭
+
+5. 소스 맵에서 동일한 위치의 키프레임을 `Ctrl + 우클릭` → **Set as Source (Green)** 클릭
+
+6. `T` / `R` 키로 기즈모 모드를 전환하고, `Ctrl`을 누른 채 기즈모를 드래그하여 소스 키프레임의 위치·방향을 수동 조정
+   - `T`: Translate (이동) / `R`: Rotate (회전)
+
+7. **Run ICP**로 정밀 정렬
+   - **Noise Scale**: Between Factor의 노이즈 값 (기본값: 0.01, 범위: 0 ~ 1)
+   - **Max Distance**: 대응점 최대 거리 (기본값: 5.0m, 범위: 0 ~ 10)
+
+8. **Add Loop Factor** 버튼 클릭 (타겟 맵과 소스 맵의 키프레임을 연결)
+   - 여러 쌍에 대해 반복하면 정렬 정확도가 향상됩니다
+
+9. **Run Optimization** 버튼으로 맵 최적화
+
+10. 결과 확인 후 **Save As** 버튼을 클릭하여 `{site_name}/{local_time}/hd_map/edited/` 폴더를 생성하고 저장
+
+</Steps>
+
+## 실제 사용 흐름
+
+```
+[맵 머징 워크플로우]
+1. 잘못 정합된 맵 확인 → [Clear] → 맵 초기화
+2. [Load Map] → 기존 HD 맵 (original_hd_map.bin.zst) 로드
+3. [Load Source Map] → 결합할 추가 맵 (addition_map.bin.zst) 로드
+4. 겹치는 영역에서 Ctrl + 우클릭 → Set as Target (Red)
+5. 소스 맵에서 Ctrl + 우클릭 → Set as Source (Green)
+6. T / R 키로 기즈모 모드 전환, Ctrl + 드래그로 위치·방향 조정
+7. [Run ICP] → 정밀 정렬
+8. [Add Loop Factor] → 키프레임 연결 (여러 쌍 반복)
+9. [Run Optimization] → 맵 최적화
+10. 결과 확인 후 [Save As] → {site_name}/{local_time}/hd_map/edited/ 폴더 생성 후 저장
+```
+
+## 맵 저장
+
+보정된 맵은 Boost 직렬화 + Zstandard 압축 형식(`.bin.zst`)으로 저장됩니다.
+
+1. 좌측 패널에서 **Save As** 버튼을 클릭
+   <Image src={screenshotSaveAsButton} alt="Save As 버튼 위치" />
+2. `{site_name}/{local_time}/hd_map/` 경로에서 폴더 생성 버튼을 클릭
+   <Image src={screenshotSaveEditedFolder} alt="Save Map To 다이얼로그 — hd_map 경로에서 폴더 생성 버튼 클릭" />
+3. `edited` 폴더명을 입력하고 **Create** 버튼을 클릭
+   <Image src={screenshotSaveEditedFolderName} alt="edited 폴더명 입력 후 Create 버튼 클릭" />
+4. 생성된 `edited` 폴더를 선택하고 **Select This Folder** 버튼을 클릭하여 저장
+   <Image src={screenshotSaveEditedFolderSelected} alt="edited 폴더 선택 후 Select This Folder 클릭하여 저장" />
+
+:::caution
+`original` 폴더에 덮어쓰지 않도록 주의하세요. 반드시 `edited` 폴더를 생성하여 별도로 저장해야 합니다.
+:::

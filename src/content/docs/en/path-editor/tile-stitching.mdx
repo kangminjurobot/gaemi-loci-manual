@@ -1,0 +1,118 @@
+---
+title: Tile Map Stitching
+description: How to automatically stitch tile maps and georeference them as GeoTIFF in the Navigation Editor.
+---
+
+import { Image } from 'astro:assets';
+import screenshotFull from '../../../../assets/screenshots/path-editor/path-editor-full.webp';
+import screenshotDatasourceDialogTileSelect from '../../../../assets/screenshots/path-editor/path-editor-datasource-dialog-tile-select.webp';
+import screenshotTrajectoryNoPointSelected from '../../../../assets/screenshots/path-editor/path-editor-trajectory-no-point-selected.webp';
+import screenshotPanoramaViewer from '../../../../assets/screenshots/path-editor/path-editor-panorama-viewer.webp';
+import screenshotTileMap1 from '../../../../assets/screenshots/path-editor/path_editor_tile_map_1.webp';
+import screenshotTileMap2 from '../../../../assets/screenshots/path-editor/path_editor_tile_map_2.webp';
+import screenshotTileMap3 from '../../../../assets/screenshots/path-editor/path_editor_tile_map_3.webp';
+
+<Image src={screenshotFull} alt="Navigation Editor — full view including the Tile Map Stitcher panel" />
+
+Tile map stitching is a feature that merges the **individual tile maps** produced by the HD Map Generation Server into a single continuous raster map.
+
+## What is Tile Map Stitching?
+
+During HD Map generation, the navigation map is produced as tiles on a keyframe basis. Tile map stitching is the process of placing these tiles at their correct locations and merging them into one large map.
+
+## Auto Stitch (Auto Stitch by Edge)
+
+Based on the **route_edges** or **route_nodes** stored in the DB, the system automatically matches the tiles covering each edge and stitches them together.
+
+### Prerequisites
+
+Before running auto stitch, you need the following:
+
+1. **Load tile map data**: Use Open Dataset to load a georeferenced tile ZIP file
+
+<Image src={screenshotDatasourceDialogTileSelect} alt="Open Dataset dialog — select a tile file from Workstation Storage and click the Load Dataset button" />
+
+2. **Load DB layers**: Use Load DB Layers to load route_node or route_edge data
+3. **Metadata file**: `map_meta_data.yaml` or a georeferencing transform file
+
+### Step 1: Match Tiles to Edges
+
+<Image src={screenshotTileMap1} alt="Step 1 — Tile-to-edge matching result after clicking the Match Tiles to Edges button" />
+
+Expand the **Auto Stitch by Edge** section in the left panel and click the **Match Tiles to Edges** button.
+
+Matching process:
+
+1. **Edge extraction**: First look for tag-based edges from route_node in the DB layers; fall back to route_edge if none exist
+2. **Tile range calculation**: Compute the geographic bounds of each tile ZIP file
+3. **Drive map coverage check**: If `map_meta_data.yaml` exists, the server verifies that each edge coordinate actually falls within the drive map
+4. **Full-coverage matching**: Matching succeeds only when **all coordinates** of an edge are covered by the union of the tiles
+
+When matching is complete, the results are displayed:
+
+| Item | Description |
+|-----------|------|
+| **Matched edge count** | Number of edges fully covered by tiles |
+| **Unmatched tile count** | Number of tiles not assigned to any edge |
+| **Tiles per edge** | Number and names of tiles matched to each edge |
+
+### Step 2: Select Edges
+
+<Image src={screenshotTileMap2} alt="Step 2 — Select edges to stitch from the matched edge list" />
+
+Select the edges to stitch from the matching results:
+
+| Action | Description |
+|------|------|
+| **Checkbox** | Select/deselect individual edges |
+| **All** | Select all edges |
+| **None** | Clear all selections |
+| **▶ button** | Stitch an individual edge on its own |
+
+### Step 3: Run Stitching
+
+<Image src={screenshotTileMap3} alt="Step 3 — View after stitching, with the resulting GeoTIFF added to the layers" />
+
+Click the **Stitch (N)** button to sequentially stitch the N selected edges.
+
+Stitching process per edge:
+
+1. Merge the matched tiles into a single ZIP
+2. Send to the server via `POST /api/tile-stitcher/auto-stitch`
+   - Tile ZIP + metadata (YAML) + edge coordinates + CRS + buffer distance (10 m)
+3. The server crops only the area around the edge coordinates and produces a GeoTIFF
+4. The resulting GeoTIFF is added to the layers in the left panel
+
+Progress is shown in the bottom status bar as `Auto-stitching 3/15: "edge_A_B"...`.
+
+### Step 4: Verify and Save Results
+
+When stitching completes:
+
+1. A GeoTIFF layer named after the edge is added to the **Tile Map** layer list in the left panel
+2. The stitching result is overlaid on the satellite map in the center view and can be inspected immediately
+3. Use each layer's **opacity slider** to compare with the background map and check quality
+4. Problem areas can be fixed directly in the raster using the **2D Map Editor**
+5. Use the **Save** button to save the final result to Firebase Storage
+
+:::note
+If there is an issue with the stitching result, click the **Clear** button to reset the matching, fix the tile or edge data, and restart from matching.
+:::
+
+## Using the Results
+
+The generated GeoTIFF is displayed as a background in the **Map layers** of the Navigation Editor, so it can be overlaid with the satellite map and referenced while editing paths.
+
+## Typical Workflow
+
+```
+1. [Open Dataset] → Load tile map data from server/local storage
+2. [Load DB Layers] → Load route_node/route_edge from the DB
+3. Open the Auto Stitch by Edge section
+4. [Match Tiles to Edges] → Auto-match tiles to edges
+5. Review matching results → Check the boxes for the edges you need
+6. [Stitch (N)] → Stitch the selected edges sequentially
+7. The resulting GeoTIFF is added to the layers on the left
+8. (Optional) Edit the raster in the 2D Map Editor
+9. [Save] → Save to Firebase Storage
+```

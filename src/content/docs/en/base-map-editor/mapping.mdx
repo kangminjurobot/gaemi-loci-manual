@@ -1,0 +1,185 @@
+---
+title: Mapping
+description: Guides you through the Base Map mapping procedure using the robot on-site.
+sidebar:
+  order: 1
+---
+
+import { Image } from 'astro:assets';
+import screenshotFullScreen from '../../../../assets/screenshots/base-map-editor/mapping-01-full-screen.png';
+import screenshotRobotIdInput from '../../../../assets/screenshots/base-map-editor/mapping-02-robot-id-input.png';
+import screenshotStartClick from '../../../../assets/screenshots/base-map-editor/mapping-03-start-click.png';
+import screenshotWarningMessage from '../../../../assets/screenshots/base-map-editor/mapping-04-warning-message.png';
+import screenshotRecording from '../../../../assets/screenshots/base-map-editor/mapping-05-recording.png';
+import screenshotInProgress from '../../../../assets/screenshots/base-map-editor/mapping-06-in-progress.gif';
+import screenshotEndClick from '../../../../assets/screenshots/base-map-editor/mapping-07-end-click.png';
+import screenshotEndResult from '../../../../assets/screenshots/base-map-editor/mapping-08-end-result.png';
+import screenshotElevatorPanel from '../../../../assets/screenshots/base-map-editor/mapping-09-elevator-panel.png';
+import screenshotElevatorKeypad from '../../../../assets/screenshots/base-map-editor/mapping-10-elevator-keypad.png';
+import screenshotFloorInput from '../../../../assets/screenshots/base-map-editor/mapping-11-floor-input.png';
+import screenshotSpecialFloor from '../../../../assets/screenshots/base-map-editor/mapping-12-special-floor.png';
+import screenshotExitFloor from '../../../../assets/screenshots/base-map-editor/mapping-13-exit-floor.png';
+
+After installing the robot and charge station on-site, perform mapping to generate the Base Map. This document explains the mapping procedure for general environments and for multi-floor buildings that require elevator use.
+
+## General environment mapping
+
+### 1. Verify the full screen
+
+<Image src={screenshotFullScreen} alt="Base Map Editor mapping screen — overall layout with mapping-related buttons placed in the first row of the top toolbar" />
+
+After on-site installation, connecting to the Base Map Editor shows the screen above. Mapping-related buttons are located in the **first row of the top toolbar**.
+
+:::note
+During on-site installation, only operate the buttons in the first row. The buttons in the lower row (Open, Move, Load All PCD, etc.) are used after mapping is complete, during the data verification stage.
+:::
+
+### 2. Enter the robot ID
+
+<Image src={screenshotRobotIdInput} alt="Robot ID field filled with the robot number, with the Mapping Start button enabled" />
+
+Enter the robot number in the **Robot ID** field. Once the ID is entered, mapping-related buttons such as **Mapping Start** and **Mapping End** become active.
+
+:::tip
+If you enter digits only, they are automatically converted into the full format. For example, entering `203` is automatically converted to `gaemi-1-g50-0203`.
+:::
+
+### 3. Click Mapping Start
+
+<Image src={screenshotStartClick} alt="Screen showing Outdoor/Indoor mapping type selection after clicking the Mapping Start button" />
+
+Clicking the **Mapping Start** button lets you choose the mapping type:
+
+- **Outdoor**: outdoor environment mapping
+- **Indoor**: indoor environment mapping
+
+Once you choose the type that matches the environment, the robot switches to "Site Setup" mode via the FMS API and mapping begins.
+
+### 4. Warning message
+
+<Image src={screenshotWarningMessage} alt="Warning message popup that appears during the mode transition" />
+
+A warning message may appear during the robot's mode transition when mapping starts. This is normal behavior during the transition, so you can proceed without any special action.
+
+:::note
+Even if the warning message appears, the mapping process continues normally. Once the message disappears, move on to the next step.
+:::
+
+### 5. Verify that mapping is running correctly
+
+<Image src={screenshotRecording} alt="Screen showing the Recording status after mapping has started successfully" />
+
+When mapping starts successfully, the screen displays the **"Recording..."** status.
+
+:::caution
+After the Recording indicator appears, **sensor calibration runs for about 30 seconds**. Do not move the robot during this time. Moving the robot before calibration finishes significantly degrades mapping quality. Wait 30 seconds, then begin driving the robot.
+:::
+
+### 6. Mapping in progress
+
+<img src={screenshotInProgress.src} alt="Point cloud being generated in real time while mapping is in progress" />
+
+While mapping runs, you can watch the point cloud data being generated in real time. Drive the robot freely across the entire area you want to map.
+
+:::tip
+There are no specific constraints on speed or driving pattern. The important thing is to cover the target area thoroughly, so feel free to follow varied paths.
+:::
+
+### 7. Click Mapping End
+
+<Image src={screenshotEndClick} alt="Clicking the Mapping End button after finishing driving through the mapping area" />
+
+After driving through all areas to be mapped, click the **Mapping End** button to finish mapping.
+
+### 8. Mapping End result
+
+<Image src={screenshotEndResult} alt="Screen showing data upload starting automatically and the robot returning to Waiting mode after mapping ends" />
+
+When mapping ends, **data upload starts automatically**. Once the upload completes, the robot returns to Waiting mode.
+
+:::note
+Data upload may take some time depending on the size of the mapping data. Do not turn off the robot or disconnect the network while the upload is in progress.
+:::
+
+## Elevator environment mapping
+
+When mapping a multi-floor building, use the elevator to move between floors. Once a Robot ID is entered, elevator-related buttons appear on the toolbar.
+
+### 1. Elevator control panel
+
+<Image src={screenshotElevatorPanel} alt="Elevator control panel — screen showing the Boarded and Start Exit buttons" />
+
+The elevator control panel has two primary buttons:
+
+| Button | Purpose | When to use |
+|------|------|-----------|
+| **Boarded** | Notifies that boarding is complete | Click **after the robot has fully boarded** the elevator |
+| **Start Exit** | Notifies that exit is starting | Click **when exit begins** after reaching the destination floor |
+
+:::caution
+- The **Boarded** and **Start Exit** buttons must be used **only inside the elevator**.
+- Do not move the robot **between clicking Boarded and clicking Start Exit**. If the robot moves during this interval, inter-floor registration of the mapping data may fail.
+:::
+
+### 2. Keypad after Boarded
+
+<Image src={screenshotElevatorKeypad} alt="Floor-input keypad shown after clicking the Boarded button" />
+
+When you click the **Boarded** button, a keypad appears so you can enter the floor that was boarded. The UI simulates a physical keypad and is designed to be intuitive.
+
+### 3. Enter the floor
+
+<Image src={screenshotFloorInput} alt="Specifying the floor by entering digits on the keypad" />
+
+Use the keypad to enter the floor currently boarded:
+
+| Input method | Description | Example |
+|-----------|------|------|
+| **Above-ground floor** | Digits only | `3` (3rd floor) |
+| **Below-ground floor** | B + digits | `B3` (3rd basement floor) |
+| **Special floor** | G (Ground) or R (Rooftop) | `G`, `R` |
+| **Keyboard input** | Use the KB button to switch to virtual keyboard mode | Free-form text input |
+
+- **DEL**: deletes entered characters one by one.
+- **Complete**: confirms the input.
+
+:::tip
+You can **enter the floor in advance**, before boarding the elevator. After boarding, you only need to press the **Complete** button to confirm quickly, which is convenient.
+:::
+
+<details>
+<summary>Entering special floors</summary>
+
+<Image src={screenshotSpecialFloor} alt="Special-floor input screen — keypad showing G (Ground), R (Rooftop), and KB (keyboard) buttons" />
+
+When you need to use special floor notations beyond numeric floors:
+
+- **G**: enters the Ground floor
+- **R**: enters the Rooftop floor
+- **KB**: switches to virtual keyboard mode for free-form text input (for example, `M` for Mezzanine, `PH` for Penthouse)
+
+You can enter up to 4 characters, and the keypad closes automatically when you click outside of it.
+
+</details>
+
+### 4. Enter the exit floor
+
+<Image src={screenshotExitFloor} alt="Keypad for entering the exit floor after arriving at the destination" />
+
+Clicking the **Start Exit** button shows the same keypad. Use the same floor input method as above to enter the exit floor and press **Complete** to confirm.
+
+:::tip
+Just like the boarding floor, you can **enter the exit floor in advance**. When you arrive at the destination floor, you can proceed quickly by pressing only the **Complete** button.
+:::
+
+## Mapping status indicators
+
+Various visual indicators are provided so you can check the current state while mapping is in progress:
+
+| State | Indicator | Description |
+|------|------|------|
+| **Idle** | Green check icon | Idle state before mapping starts |
+| **Requesting** | Blue spinner | Sending a mode-transition request to FMS |
+| **Polling** | Yellow spinner + Manual Check button | Waiting for the mode transition (automatic polling every 5 seconds) |
+| **Recording** | Red ping animation | Mapping data is being recorded |
+| **Error** | Red triangle + Retry button | An error occurred; a retry is required |

@@ -1,0 +1,88 @@
+---
+title: GAEMI Loci Manual
+description: A web platform for generating and managing HD maps for GAEMI autonomous mobile robots.
+template: splash
+hero:
+  tagline: The manual for the HD map creation, editing, and management platform for GAEMI autonomous mobile robots.
+  image:
+    file: ../../../assets/gaemi-loci-hero.png
+  actions:
+    - text: Get Started
+      link: /gaemi-loci-manual/en/introduction/overview/
+      icon: right-arrow
+      variant: primary
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import robotisAiLogo from '../../../assets/robotis-ai-logo.png';
+
+## Key Features
+
+<CardGrid>
+  <Card title="Step-by-Step Map Creation Guide" icon="laptop">
+    Guides you through every stage of the workflow — from defining service areas to HD map generation, map editing, and robot deployment.
+  </Card>
+  <Card title="Intuitive Map Editing Tools" icon="pencil">
+    Offers purpose-built editors such as satellite maps, 3D views, and 2D editors, making it easy for anyone to refine a map.
+  </Card>
+  <Card title="Map Quality Refinement" icon="setting">
+    Improve map accuracy with features such as ground control point alignment, path correction, and map merging.
+  </Card>
+  <Card title="Cloud-Based Automated Processing" icon="random">
+    Upload the data collected in the field, and the server will automatically generate an HD map. You can track progress in real time.
+  </Card>
+</CardGrid>
+
+---
+
+## Documentation Structure
+
+<CardGrid>
+  <LinkCard
+    title="Introduction"
+    description="Learn what GAEMI Loci is and what tools it provides."
+    href="/gaemi-loci-manual/en/introduction/overview/"
+  />
+  <LinkCard
+    title="Dashboard"
+    description="Create map generation Jobs and manage their progress."
+    href="/gaemi-loci-manual/en/dashboard/"
+  />
+  <LinkCard
+    title="Service Area Editor"
+    description="Define the service area where the robot will operate on a satellite map."
+    href="/gaemi-loci-manual/en/service-area-editor/registration/"
+  />
+  <LinkCard
+    title="Navigation Editor"
+    description="Edit the driving paths that the robot will follow."
+    href="/gaemi-loci-manual/en/path-editor/editing/"
+  />
+  <LinkCard
+    title="Base Map Editor"
+    description="Guides you through the on-site mapping procedure and registers charging stations."
+    href="/gaemi-loci-manual/en/base-map-editor/mapping/"
+  />
+  <LinkCard
+    title="3D Map Correction"
+    description="Improve map accuracy with ground control point alignment, path correction, and map merging."
+    href="/gaemi-loci-manual/en/map-correction/gcp-georeferencing/"
+  />
+  <LinkCard
+    title="File Management"
+    description="Upload or download map data."
+    href="/gaemi-loci-manual/en/file-manager/upload-download/"
+  />
+</CardGrid>
+
+---
+
+<div style="text-align: center; padding: 2rem 0 1rem;">
+  <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--sl-color-gray-3); margin-bottom: 0.5rem;">Written by</p>
+  <Image src={robotisAiLogo} alt="ROBOTIS AI" style="display: inline-block; height: auto; max-width: 200px;" />
+</div>
+
+<p style="text-align: center; font-size: 0.8rem; color: var(--sl-color-gray-3); border-top: 1px solid var(--sl-color-gray-5); padding-top: 1rem;">
+© 2026 ROBOTIS AI. All rights reserved.
+</p>

@@ -1,0 +1,128 @@
+---
+title: 업로드
+description: 맵 데이터를 Firebase Storage에 업로드하는 방법을 단계별로 안내합니다.
+---
+
+import { Image } from 'astro:assets';
+import imgDashboardEntry from '../../../assets/screenshots/file-manager/upload-initial-dashboard-entry.webp';
+import imgDataReady from '../../../assets/screenshots/file-manager/upload-data-ready.webp';
+import imgConfirmDialog from '../../../assets/screenshots/file-manager/upload-confirm-dialog.webp';
+import imgInProgress from '../../../assets/screenshots/file-manager/upload-in-progress.webp';
+import imgComplete from '../../../assets/screenshots/file-manager/upload-complete.webp';
+import imgChangeServiceArea from '../../../assets/screenshots/file-manager/upload-change-service-area.webp';
+import imgSelectLocalTime from '../../../assets/screenshots/file-manager/upload-select-local-time.webp';
+import imgEmptyState from '../../../assets/screenshots/file-manager/upload-empty-state.webp';
+import imgSelectServiceArea from '../../../assets/screenshots/file-manager/upload-select-service-area.webp';
+
+## 업로드 절차
+
+Dashboard에서 **2D/3D Map Uploader** Step을 진행하기 위해 Up/Downloader 탭에 진입한 경우의 흐름입니다.
+
+### 1. 진입 후 첫 화면
+
+<Image src={imgDashboardEntry} alt="Dashboard에서 Up/Downloader 탭 진입 시 첫 화면" />
+
+Dashboard에서 진입하면 오른쪽 **Standard Upload** 패널에 업로드할 데이터가 자동으로 셋팅되어 있습니다.
+왼쪽에는 Remote Repository 영역이 표시되며, 실제 업로드 설정은 오른쪽 패널에서 진행합니다.
+
+### 2. 업로드 데이터 확인
+
+<Image src={imgDataReady} alt="업로드 데이터 셋팅 완료 상태" />
+
+오른쪽 패널을 자세히 보면 다음 항목들이 셋팅되어 있습니다.
+
+- **Workstation Storage** — 현재 선택된 Service Area가 표시됩니다.
+- **HD Map (3D)** — 3D 맵 관련 파일 목록입니다. 각 파일 옆에 초록색 체크 아이콘이 표시되면 정상적으로 인식된 것입니다.
+  - `localization_map.bin.zst`, `hd_map.pcd`, `lidar_map_tf.yaml`, `map_meta_data.yaml`
+- **Charge Station** — 충전소 설정 파일(`charge_station.yaml`)입니다.
+- **Navigation Map (2D)** — 2D 내비게이션 맵 데이터입니다. **Local Time** 드롭다운에서 시점이 선택되어 있고, 아래 엣지(edge) 목록에서 업로드할 항목들이 체크되어 있습니다.
+
+모든 항목이 올바른지 확인한 후 하단의 **Upload** 버튼을 클릭합니다.
+
+### 3. 확인 팝업
+
+<Image src={imgConfirmDialog} alt="업로드 확인 팝업" />
+
+업로드 대상과 Service Area 이름이 포함된 확인 팝업이 나타납니다.
+표시된 내용이 맞는지 확인한 후 **OK**를 클릭하면 업로드가 시작됩니다.
+
+### 4. 업로드 진행
+
+<Image src={imgInProgress} alt="업로드 진행 중 화면 — Overall 진행률과 현재 파일 진행률 표시" />
+
+업로드가 시작되면 두 개의 진행 바가 표시됩니다.
+
+- **Overall** (초록색 바) — 전체 업로드 진행률(%)과 경과 시간이 함께 표시됩니다.
+- **현재 파일** (보라색 바) — 현재 처리 중인 데이터의 이름(예: `Processing edge: me_10-me_11`)과 개별 진행률이 표시됩니다.
+
+하단의 **Event Log**를 펼치면 각 단계별 상세 로그를 확인할 수 있습니다.
+
+:::note
+업로드 중에는 페이지를 새로고침하거나 탭을 닫지 마세요.
+:::
+
+### 5. 업로드 완료
+
+<Image src={imgComplete} alt="업로드 완료 화면 — 파일 목록과 소요 시간 표시" />
+
+업로드가 완료되면 초록색 **Complete** 카드가 표시되며, 다음 정보를 확인할 수 있습니다.
+
+- **소요 시간** — 오른쪽 상단에 총 경과 시간이 `mm:ss` 형식으로 표시됩니다.
+- **처리 결과** — 복사된 파일 수(Copied), 생성된 파일 수(Generated), 업로드된 파일 수(Uploaded)가 표시됩니다.
+- **파일 목록** — 업로드된 파일들의 이름이 나열됩니다.
+
+다른 데이터를 업로드하려면 하단의 **Start New** 버튼을 클릭합니다.
+
+---
+
+## 문제 해결
+
+<details>
+<summary>**원치 않는 데이터셋이 셋팅되어 있을 경우**</summary>
+
+자동으로 셋팅된 Service Area나 Local Time이 의도한 것과 다를 때, 아래 순서대로 변경합니다.
+
+#### 1. Service Area 변경
+
+<Image src={imgChangeServiceArea} alt="Service Area 선택 버튼과 Load Dataset 버튼 위치" />
+
+1. <span style="color: #a855f7">**보라색 선**</span>으로 표시된 **Service Area** 드롭다운을 눌러 원하는 Service Area를 선택합니다.
+2. <span style="color: #ff00ff">**마젠타색 선**</span>으로 표시된 **Load Dataset** 버튼을 클릭하면, 선택한 Service Area에 해당하는 데이터셋이 아래에 다시 로드됩니다.
+
+#### 2. Local Time 선택
+
+<Image src={imgSelectLocalTime} alt="Local Time 드롭다운 선택" />
+
+Navigation Map (2D) 섹션에서 <span style="color: #a855f7">**보라색 선**</span>으로 표시된 **Local Time** 드롭다운을 눌러 원하는 시점을 선택합니다.
+시점을 변경하면 해당 시점의 엣지 목록이 자동으로 갱신됩니다.
+
+#### 3. 선택 완료 후
+
+<Image src={imgDataReady} alt="데이터 셋팅 완료 — Upload 버튼 클릭" />
+
+변경된 데이터가 올바른지 확인한 후 **Upload** 버튼을 클릭합니다.
+이후 과정은 [3. 확인 팝업](#3-확인-팝업)부터 동일합니다.
+
+</details>
+
+<details>
+<summary>**새로고침으로 데이터가 초기화된 경우**</summary>
+
+페이지를 새로고침하면 모든 셋팅이 초기화되어 빈 상태가 됩니다. 아래 순서대로 데이터를 다시 셋팅합니다.
+
+#### 1. 초기 화면
+
+<Image src={imgEmptyState} alt="새로고침 후 빈 화면 — 데이터 셋팅 없음" />
+
+Service Area가 선택되지 않았기 때문에 HD Map, Charge Station, Navigation Map 항목이 표시되지 않습니다.
+
+#### 2. Service Area 선택
+
+<Image src={imgSelectServiceArea} alt="빈 상태에서 Service Area 선택 및 Load Dataset 클릭" />
+
+1. <span style="color: #a855f7">**보라색 선**</span>으로 표시된 **Service Area** 드롭다운을 눌러 원하는 Service Area를 선택합니다.
+2. <span style="color: #ff00ff">**마젠타색 선**</span>으로 표시된 **Load Dataset** 버튼을 클릭하면, 해당 Service Area의 데이터셋이 로드됩니다.
+
+이후 과정은 위 "원치 않는 데이터셋이 셋팅되어 있을 경우"의 [2. Local Time 선택](#2-local-time-선택)부터 동일합니다.
+
+</details>
