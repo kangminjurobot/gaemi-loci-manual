@@ -1,91 +1,85 @@
 ---
-title: GAEMI Loci Overview
-description: An introduction to the GAEMI Loci HD map platform, covering its UI layout, available tools, and user roles.
+title: Workflow Overview
+description: An overview of the three-phase HD map generation workflow in GAEMI Loci.
 sidebar:
-  order: 1
+  order: 2
 ---
 
-import { Card, CardGrid, LinkCard, Aside, Badge } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard, Aside, Steps } from '@astrojs/starlight/components';
 import { Image } from 'astro:assets';
-import editorsOverview from '../../../../assets/diagrams/editors-overview.svg';
-import screenshotMain from '../../../../assets/screenshots/app-layout/intro-main.png';
-import screenshotTabLeft from '../../../../assets/screenshots/app-layout/intro-tab-left.png';
-import screenshotTabRight from '../../../../assets/screenshots/app-layout/intro-tab-right.png';
+import YouTube from '../../../../components/YouTube.astro';
+import workflowPhases from '../../../../assets/diagrams/workflow-phases.svg';
+import screenshotPhase1 from '../../../../assets/screenshots/app-layout/intro-01.png';
+import screenshotPhase2 from '../../../../assets/screenshots/app-layout/intro-02.png';
+import screenshotPhase3 from '../../../../assets/screenshots/app-layout/intro-03.png';
 
-<Image src={screenshotMain} alt="The full GAEMI Loci dashboard — Job list grouped by Phase at the top, with Job markers on a world map at the bottom." />
+GAEMI Loci organizes HD map generation into **three Phases**.
+Each Phase is broken down into detailed Steps, and you can monitor current progress from the dashboard.
 
-## What is GAEMI Loci?
+<img src={workflowPhases.src} alt="Diagram of the GAEMI Loci three-phase workflow" />
 
-For an autonomous mobile robot to drive safely outdoors, it needs a precise High-Definition (HD) map.
-**GAEMI Loci** is a **web platform** that turns data collected in the field by a robot into an HD map, lets you edit it, and deploys it to the robot.
+## Phase 1 — Preparation
+
+<Image src={screenshotPhase1} alt="Phase 1 — setting up the service area on a satellite map and marking the robot's driving path." />
+
+<YouTube id="p-k46jWUCjc" title="Phase 1 — Preparation Workflow" />
+
+This is the stage where you prepare from the office before deploying the robot to the field.
+
+<Steps>
+1. **Define the service area**: Mark the region where the robot will operate on a satellite map.
+2. **Author the robot path**: Edit the driving path that the robot will follow within the service area.
+3. **Review and approve the path**: Have a reviewer inspect and approve the authored path.
+</Steps>
 
 <Aside type="tip">
-GAEMI Loci runs entirely in the browser, so no additional software installation is required.
+Phase 1 can be carried out remotely without visiting the site.
 </Aside>
 
-## UI Layout
+## Phase 2 — On-Site Installation
 
-The GAEMI Loci screen is made up of a **sidebar**, **top tabs**, a **main editing area**, and a **bottom status bar**.
+<Image src={screenshotPhase2} alt="Phase 2 — configuring charging stations on-site and collecting mapping data with the robot." />
 
-### Top-Left Tabs
+<YouTube id="--WVn8SYrYQ" title="Phase 2 — On-Site Installation Workflow" />
 
-<Image src={screenshotTabLeft} alt="Top-left tabs — composed of two tabs, Overview and Workspace." />
+This is the stage where you deploy the robot to the field, collect real-world mapping data, and generate the HD map.
 
-Switch between the two dashboard view modes: **Overview** and **Workspace**.
+<Steps>
+1. **Collect mapping data**: Drive the robot around the site to gather data about the surrounding environment.
+2. **Upload data**: The collected data is uploaded to the server.
+3. **Automated HD map generation**: The server analyzes the uploaded data and automatically generates an HD map.
+4. **Edit and refine the map**: Review the generated map in the web interface and make any necessary edits or corrections.
+5. **Final upload**: Upload the completed map in a format ready to be deployed to the robot.
+</Steps>
 
-- **Overview**: View the status of every Job grouped by Phase at a glance, and locate Jobs on a world map.
-- **Workspace**: Manage the detailed workflow of a selected Job and progress through each Step.
+## Phase 3 — Expansion
 
-### Top-Right Tabs
+<Image src={screenshotPhase3} alt="Phase 3 — monitoring autonomous driving status and expanding the map from the map editing and control dashboard." />
 
-<Image src={screenshotTabRight} alt="Top-right tabs — real-time display of Job counts per Phase, HD Maps/Nav Maps counts, and CPU/RAM usage." />
+<YouTube id="jOmIDXuJR1g" title="Phase 3 — Expansion Workflow" />
 
-Monitor system status in real time.
+This is the stage where you expand the service area or improve an existing map. It can be repeated as needed.
 
-| Item | Description |
-|------|------|
-| **P1 / P2 / P3** | Number of Jobs in each Phase (color-coded by Phase) |
-| **HD Maps / Nav Maps** | Number of generated maps |
-| **CPU / RAM** | Server resource usage (visualized as gauge bars) |
-
-## Available Tools
-
-GAEMI Loci provides dedicated editing tools tailored to each stage of HD map generation.
-
-<img src={editorsOverview.src} alt="Overview of the GAEMI Loci editor modules" />
-
-<CardGrid>
-  <Card title="Dashboard" icon="laptop">
-    Create map generation Jobs and review the progress of each stage at a glance.
-  </Card>
-  <Card title="Service Area Editor" icon="pencil">
-    Define and register the service area where the robot will operate on a satellite map. Supports address search and location selection.
-  </Card>
-  <Card title="Navigation Editor" icon="random">
-    Edit the driving paths that the robot will follow. You can add or modify waypoints (nodes) and segments (edges).
-  </Card>
-  <Card title="Base Map Editor" icon="open-book">
-    Review the 3D data collected in the field and register charging stations and ground control points.
-  </Card>
-  <Card title="3D Map Editor / Map Correction" icon="setting">
-    Improve map accuracy with tools for ground control point alignment, path correction, map merging, and obstacle map editing.
-  </Card>
-  <Card title="File Management" icon="seti:folder">
-    Upload mapping data or download completed map files.
-  </Card>
-</CardGrid>
-
-## User Roles
-
-Different tools in GAEMI Loci are used depending on your role.
-
-| Role | Responsibilities | Primary Tools |
-|------|----------|--------------|
-| <Badge text="Biz & Ops" variant="note" /> | Service area registration and workflow management | Dashboard, Service Area Editor |
-| <Badge text="Path Editor" variant="success" /> | Authoring and editing robot driving paths | Navigation Editor |
-| <Badge text="Map Editor" variant="caution" /> | Map editing and quality refinement | Base Map Editor, 3D Map Editor / Map Correction |
-| <Badge text="Inspector" variant="danger" /> | Map quality inspection and approval | Base Map Editor |
+<Steps>
+1. **Map additional areas**: Collect additional data from new regions.
+2. **Merge with the existing map**: Integrate the newly collected data into the existing HD map.
+3. **Iterative refinement**: Continuously improve map quality by adding data on a per-session basis.
+</Steps>
 
 <Aside>
-A single account can hold multiple roles. For example, at a small site, one person may handle both path editing and map editing.
+Phase 3 can be performed even while the service is in operation. Simply add a new session whenever the operating area is expanded.
 </Aside>
+
+---
+
+## Map Generation at a Glance
+
+Here is a brief summary of the entire process.
+
+<Steps>
+1. **Collect data in the field** — The robot drives around and scans the surrounding environment.
+2. **Automatic upload to the server** — The collected data is transferred to the cloud server.
+3. **Automated HD map generation** — The server processes the data to produce an HD map. You can monitor the progress in real time.
+4. **Edit the map in the browser** — Review the generated map in a web browser and perform tasks such as obstacle correction and path refinement.
+5. **Deploy to the robot** — Deliver the completed map to the robot for use in autonomous driving.
+</Steps>
