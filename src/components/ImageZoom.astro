@@ -1,0 +1,40 @@
+{/*
+  Image zoom initialization. Double-click any content image to zoom.
+  This component renders no visible output; it only ships the client script.
+*/}
+
+<script>
+  import mediumZoom from 'medium-zoom';
+
+  function initImageZoom() {
+    // Content images live inside <main>. Exclude decorative / UI icons.
+    const images = document.querySelectorAll<HTMLImageElement>(
+      'main img:not([data-zoom-skip]):not(.site-title img):not([class*="sl-icon"])',
+    );
+    if (images.length === 0) return;
+
+    const zoom = mediumZoom({
+      background: 'rgba(0, 0, 0, 0.85)',
+      margin: 24,
+      scrollOffset: 0,
+    });
+
+    images.forEach((img) => {
+      if (img.dataset.zoomReady === '1') return;
+      img.dataset.zoomReady = '1';
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('dblclick', (event) => {
+        event.preventDefault();
+        zoom.open({ target: img });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initImageZoom);
+  } else {
+    initImageZoom();
+  }
+  // Re-run after Starlight search dialog navigations, hash changes, etc.
+  window.addEventListener('pageshow', initImageZoom);
+</script>
