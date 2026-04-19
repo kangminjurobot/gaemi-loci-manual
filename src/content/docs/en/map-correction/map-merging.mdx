@@ -20,7 +20,7 @@ import screenshotSaveEditedFolderSelected from '../../../../assets/screenshots/m
 import screenshotWrongCase from '../../../../assets/screenshots/map-correction/map_merging_wrong_case.png';
 import screenshotCorrectionCase from '../../../../assets/screenshots/map-correction/map_merging_correction_case.png';
 
-Map merging is a feature that combines an **existing HD Map (target map)** and an **additional map (source map)** into a single map. When an incorrect registration occurs during Map Aggregation and the map is broken, the user visually identifies the issue, manually loads the maps to combine, and merges them.
+Map merging combines an **existing HD Map (target map)** and an **additional map (source map)** into a single map. When an incorrect registration occurs during Map Aggregation and the map is broken, the user visually identifies the issue, manually loads the maps to combine, and merges them.
 
 <Tabs>
   <TabItem label="Incorrect registration">
@@ -35,12 +35,12 @@ Map merging is a feature that combines an **existing HD Map (target map)** and a
 
 :::note
 - `{site_name}` is the service area, and `{local_time}` is the time at which the map started to degrade.
-- From step 4 onward, the process is identical to [loop closure correction](./loop-closure/#workflow).
+- From step 4 onward, the process is the same as [loop closure correction](./loop-closure/#workflow).
 :::
 
 <Steps>
 
-1. Visually inspect the map automatically loaded by Map Aggregation to check for incorrect registration, then click the **Clear** button to reset the map.
+1. Visually inspect the map that Map Aggregation loaded automatically to check for incorrect registration, then click the **Clear** button to reset the map.
 
    <Image src={screenshotClearButton} alt="Clear button — location of the button that resets an incorrectly registered map" />
 
@@ -56,14 +56,14 @@ Map merging is a feature that combines an **existing HD Map (target map)** and a
    <Image src={screenshotLoadSourceMapResult} alt="Source Map loaded — Target Map and Source Map displayed together" />
 
    :::caution
-   After loading the Source Map, you must connect a loop via loop closure correction in the overlapping area between the Target Map and the Source Map. If you run optimization without a loop connection, the maps will not merge correctly.
+   After loading the Source Map, you must connect a loop through loop closure correction in the overlapping area between the Target Map and the Source Map. If you run optimization without a loop connection, the maps will not merge correctly.
    :::
 
 4. In the overlapping area between the target map and the source map, `Ctrl + right-click` the reference keyframe and click **Set as Target (Red)**.
 
-5. `Ctrl + right-click` the keyframe at the same location on the source map and click **Set as Source (Green)**.
+5. `Ctrl + right-click` the keyframe at the same location on the source map, then click **Set as Source (Green)**.
 
-6. Toggle the gizmo mode with the `T` / `R` keys, then hold `Ctrl` and drag the gizmo to manually adjust the position and orientation of the source keyframe.
+6. Toggle the gizmo mode with the `T` / `R` keys, then hold `Ctrl` and drag the gizmo to manually adjust the source keyframe's position and orientation.
    - `T`: Translate / `R`: Rotate
 
 7. Perform fine alignment with **Run ICP**.
@@ -75,7 +75,7 @@ Map merging is a feature that combines an **existing HD Map (target map)** and a
 
 9. Optimize the map with the **Run Optimization** button.
 
-10. Review the result and click **Save As** to create the `{site_name}/{local_time}/hd_map/edited/` folder and save the map there.
+10. Review the result, then click **Save As** to create the `{site_name}/{local_time}/hd_map/edited/` folder and save the map there.
 
 </Steps>
 
@@ -109,5 +109,5 @@ Corrected maps are saved in Boost serialization + Zstandard compression format (
    <Image src={screenshotSaveEditedFolderSelected} alt="Select the edited folder and click Select This Folder to save" />
 
 :::caution
-Be careful not to overwrite the `original` folder. You must create and save into an `edited` folder separately.
+Be careful not to overwrite the `original` folder. You must create a separate `edited` folder and save there.
 :::

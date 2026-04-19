@@ -12,7 +12,7 @@ import screenshotPanoramaViewer from '../../../../assets/screenshots/path-editor
 import screenshotTrajectory from '../../../../assets/screenshots/path-editor/path-editor-trajectory-no-point-selected.webp';
 import screenshotTileSelect from '../../../../assets/screenshots/path-editor/path-editor-datasource-dialog-tile-select.webp';
 
-The 2D Map Editor is a tool within the Navigation Editor that lets you directly edit **GeoTIFF tile map raster images**. It is used to modify navigation maps such as segmentation maps, collision maps, and drop-off maps.
+The 2D Map Editor is a tool within the Navigation Editor that lets you directly edit **GeoTIFF tile map raster images**. Use it to modify navigation maps such as segmentation maps, collision maps, and drop-off maps.
 
 ## Screen Layout
 
@@ -30,11 +30,11 @@ Click the **pencil icon** (<i className="fas fa-pencil-alt"></i>) on a GeoTIFF l
 |------|------|
 | **Start editing** | Click the pencil icon on a .tif layer in the left panel |
 | **End editing** | Ends automatically after Save BMP, or click Stop Edit |
-| **Switch layer** | Clicking the pencil icon on another layer saves the current edits and switches |
+| **Switch layer** | Clicking the pencil icon on another layer saves the current edits and switches to that layer |
 
 ## Drawing Tools
 
-Select a tool at the top of the right panel. You can also switch using keyboard shortcuts.
+Select a tool at the top of the right panel. You can also switch tools using keyboard shortcuts.
 
 | Tool | Icon | Shortcut | Function |
 |------|--------|--------|------|
@@ -82,11 +82,11 @@ Select a tool at the top of the right panel. You can also switch using keyboard 
 | **Green** | (0, 255, 0) |
 | **Blue** | (0, 0, 255) |
 
-You can also pick any color with the **custom color picker** next to the presets.
+You can also pick any color using the **custom color picker** next to the presets.
 
 ### Segmentation Label Colors
 
-Expanding the **Segmentation Labels** toggle lets you pick colors for each segmentation class directly:
+Expanding the **Segmentation Labels** toggle lets you directly pick colors for each segmentation class:
 
 | Label | Color | Purpose |
 |------|------|------|
@@ -119,7 +119,7 @@ After editing, click the **Save BMP** button to:
 3. Automatically exit editing mode
 
 :::note
-Save BMP is enabled only after a dataset has been opened. The button is disabled if no dataset path is set.
+Save BMP is enabled only after a dataset has been opened. The button is disabled when no dataset path is set.
 :::
 
 ## Typical Workflow

@@ -15,7 +15,7 @@ import screenshotDbLayerPanels from '../../../../assets/screenshots/path-editor/
 import screenshotDbLayerEdit from '../../../../assets/screenshots/path-editor/path_editor_map_edit.webp';
 
 
-The Path Editor is a tool for editing the **topology-based path** the robot will drive. It manages path data in conjunction with a PostgreSQL/PostGIS database.
+The Path Editor is a tool for editing the **topology-based path** the robot will drive. It manages path data together with a PostgreSQL/PostGIS database.
 
 ## Screen Layout
 
@@ -31,7 +31,7 @@ A green button (with a database icon) that loads the DB layers.
 <Image src={screenshotDbLayerPanels} alt="Layer load panel — DB layers and opacity control" />
 
 - Clicking it fetches layer data from the configured DB connection
-- Shows an error message if no data exists or the connection fails
+- Displays an error message if no data exists or the connection fails
 
 ### DB Layers
 
@@ -45,7 +45,7 @@ Data layers loaded from PostgreSQL:
 
 ### Map Layers
 
-Use Open in the Tile Map to load the desired map onto the map list.
+Use Open in the Tile Map section to load the desired map into the map list.
 <Image src={screenshotMapLayerPanel} alt="Map layer panel — GeoTIFF raster map layers and opacity control" />
 
 ## Editing Modes and Keyboard Shortcuts
@@ -54,7 +54,7 @@ Use Open in the Tile Map to load the desired map onto the map list.
 
 <Image src={screenshotMapCanvas} alt="Path Editor map canvas — node/edge editing mode" />
 
-Switch between the following modes in the top toolbar. You can also activate each mode with a keyboard shortcut, and only one mode is active at a time.
+Switch between the following modes using the top toolbar. You can also activate each mode with a keyboard shortcut. Only one mode can be active at a time.
 
 | Mode | Shortcut | Color | Function |
 |------|--------|------|------|
@@ -74,7 +74,7 @@ Each mode button has different colors for the **inactive (default)** and **activ
 | **Active** | Mode-color background + white text + " ON" suffix on the label |
 | **Hover** | Slightly brighter background (`hover:bg-[#252525] hover:text-white`) |
 
-For example, when POI Mode is active the button shows **"POI Mode ON"** and is highlighted in pink.
+For example, when POI Mode is active, the button shows **"POI Mode ON"** and is highlighted in pink.
 
 <Image src={screenshotAddEdgeMode} alt="Add Edge mode active — canvas while connecting an edge" />
 
@@ -89,7 +89,7 @@ Select existing nodes and edges to modify them.
 
 #### Allocate Tag Button
 
-A button that only appears in Edit Mode; it automatically assigns tags to the selected nodes/edges.
+A button that appears only in Edit Mode; it automatically assigns tags to the selected nodes/edges.
 
 | State | Appearance |
 |------|------|
@@ -102,7 +102,7 @@ A button that only appears in Edit Mode; it automatically assigns tags to the se
 Add new nodes.
 
 - Click the desired location on the map to create a node
-- Successive clicks automatically connect the nodes with edges
+- Consecutive clicks automatically connect the nodes with edges
 
 ### POI Mode (`E`)
 
@@ -116,7 +116,7 @@ Add Points of Interest.
 Delete the selected feature.
 
 - Clicking a node or edge deletes it
-- Deleting a node also deletes the edges connected to it
+- Deleting a node also deletes any edges connected to it
 
 ## Property Editing
 
@@ -156,8 +156,8 @@ Switch the background using the **Satellite selector** on the left side of the t
 
 ## Coordinate System
 
-The Path Editor supports the **URDF coordinate system**. Conversion between the robot's local coordinates and GPS coordinates is performed automatically.
+The Path Editor supports the **URDF coordinate system**. Conversion between the robot's local coordinates and GPS coordinates happens automatically.
 
 ## Data Storage
 
-Edited path data is **saved to the DB immediately**. Edits are reflected in real time without a separate save button.
+Edited path data is **saved to the DB immediately**. Changes are reflected in real time without a separate save button.

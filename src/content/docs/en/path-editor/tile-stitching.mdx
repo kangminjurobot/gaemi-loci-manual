@@ -14,15 +14,15 @@ import screenshotTileMap3 from '../../../../assets/screenshots/path-editor/path_
 
 <Image src={screenshotFull} alt="Navigation Editor — full view including the Tile Map Stitcher panel" />
 
-Tile map stitching is a feature that merges the **individual tile maps** produced by the HD Map Generation Server into a single continuous raster map.
+Tile map stitching merges the **individual tile maps** produced by the HD Map Generation Server into a single continuous raster map.
 
 ## What is Tile Map Stitching?
 
-During HD Map generation, the navigation map is produced as tiles on a keyframe basis. Tile map stitching is the process of placing these tiles at their correct locations and merging them into one large map.
+During HD Map generation, the navigation map is produced as tiles on a per-keyframe basis. Tile map stitching is the process of placing these tiles at their correct locations and merging them into one large map.
 
 ## Auto Stitch (Auto Stitch by Edge)
 
-Based on the **route_edges** or **route_nodes** stored in the DB, the system automatically matches the tiles covering each edge and stitches them together.
+Based on the **route_edges** or **route_nodes** stored in the DB, the system automatically matches the tiles that cover each edge and stitches them together.
 
 ### Prerequisites
 
@@ -43,10 +43,10 @@ Expand the **Auto Stitch by Edge** section in the left panel and click the **Mat
 
 Matching process:
 
-1. **Edge extraction**: First look for tag-based edges from route_node in the DB layers; fall back to route_edge if none exist
-2. **Tile range calculation**: Compute the geographic bounds of each tile ZIP file
+1. **Edge extraction**: First looks for tag-based edges from route_node in the DB layers; falls back to route_edge if none exist
+2. **Tile range calculation**: Computes the geographic bounds of each tile ZIP file
 3. **Drive map coverage check**: If `map_meta_data.yaml` exists, the server verifies that each edge coordinate actually falls within the drive map
-4. **Full-coverage matching**: Matching succeeds only when **all coordinates** of an edge are covered by the union of the tiles
+4. **Full-coverage matching**: Matching succeeds only when **all coordinates** of an edge are covered by the union of tiles
 
 When matching is complete, the results are displayed:
 
@@ -73,7 +73,7 @@ Select the edges to stitch from the matching results:
 
 <Image src={screenshotTileMap3} alt="Step 3 — View after stitching, with the resulting GeoTIFF added to the layers" />
 
-Click the **Stitch (N)** button to sequentially stitch the N selected edges.
+Click the **Stitch (N)** button to stitch the N selected edges in sequence.
 
 Stitching process per edge:
 
@@ -90,18 +90,18 @@ Progress is shown in the bottom status bar as `Auto-stitching 3/15: "edge_A_B"..
 When stitching completes:
 
 1. A GeoTIFF layer named after the edge is added to the **Tile Map** layer list in the left panel
-2. The stitching result is overlaid on the satellite map in the center view and can be inspected immediately
+2. The stitching result is overlaid on the satellite map in the center view so you can inspect it immediately
 3. Use each layer's **opacity slider** to compare with the background map and check quality
-4. Problem areas can be fixed directly in the raster using the **2D Map Editor**
-5. Use the **Save** button to save the final result to Firebase Storage
+4. Fix any problem areas directly in the raster using the **2D Map Editor**
+5. Click the **Save** button to save the final result to Firebase Storage
 
 :::note
-If there is an issue with the stitching result, click the **Clear** button to reset the matching, fix the tile or edge data, and restart from matching.
+If there is an issue with the stitching result, click the **Clear** button to reset the matching, fix the tile or edge data, and restart from the matching step.
 :::
 
 ## Using the Results
 
-The generated GeoTIFF is displayed as a background in the **Map layers** of the Navigation Editor, so it can be overlaid with the satellite map and referenced while editing paths.
+The generated GeoTIFF is displayed as a background layer under **Map layers** in the Navigation Editor, where it can be overlaid with the satellite map and referenced while editing paths.
 
 ## Typical Workflow
 

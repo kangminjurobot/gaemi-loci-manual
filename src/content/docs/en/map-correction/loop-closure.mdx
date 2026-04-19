@@ -21,7 +21,7 @@ import stepOptimizeButton from '../../../../assets/screenshots/map-correction/lo
 import stepOptimizeBefore from '../../../../assets/screenshots/map-correction/loop-closure-step-optimize-before.png';
 import stepOptimizeAfter from '../../../../assets/screenshots/map-correction/loop-closure-step-optimize-after.png';
 
-Loop closure correction is a feature that corrects the **accumulated error (drift)** that arises during SLAM. It is performed in the **Correction tab** of the 3D Map Editor.
+Loop closure correction corrects the **accumulated error (drift)** that arises during SLAM. It is performed in the **Correction tab** of the 3D Map Editor.
 
 ## Screen Layout
 
@@ -32,7 +32,7 @@ Loop closure correction is a feature that corrects the **accumulated error (drif
 
 ## Keyframe Color Codes
 
-Keyframes in the 3D viewport are distinguished by color:
+Keyframes in the 3D viewport are color-coded:
 
 | Color | Meaning |
 |------|------|
@@ -42,7 +42,7 @@ Keyframes in the 3D viewport are distinguished by color:
 
 ## Workflow
 
-The full flow from selecting target/source keyframes to gizmo adjustment, ICP alignment, and optimization.
+The full flow, from selecting target/source keyframes through gizmo adjustment, ICP alignment, and optimization:
 
 <img src={screenshotManualLoop.src} alt="Manual loop closure — aligning poses with the gizmo after selecting target/source keyframes" />
 
@@ -56,7 +56,7 @@ The full flow from selecting target/source keyframes to gizmo adjustment, ICP al
 
    <Image src={stepSetSource} alt="Set as Source — open the context menu with Ctrl + right-click and choose Set as Source (Green)" />
 
-3. Toggle the gizmo mode with the `T` / `R` keys, then hold `Ctrl` and drag the gizmo to manually adjust the position and orientation.
+3. Toggle the gizmo mode with the `T` / `R` keys, then hold `Ctrl` and drag the gizmo to manually adjust position and orientation.
    - `T`: Translate / `R`: Rotate
 
    <Image src={stepGizmoTranslation} alt="Translate mode — switch with T and drag with Ctrl to move the keyframe position" />

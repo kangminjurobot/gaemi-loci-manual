@@ -19,14 +19,14 @@ import screenshotPhase3 from '../../../../assets/screenshots/app-layout/intro-03
 ## What is GAEMI Loci?
 
 For an autonomous mobile robot to drive safely outdoors, it needs a precise High-Definition (HD) map.
-**GAEMI Loci** is a **web platform** that turns data collected in the field by a robot into an HD map, lets you edit it, and deploys it to the robot.
+**GAEMI Loci** is a **web platform** that turns data collected in the field by a robot into an HD map, lets you edit it, and deploys the result back to the robot.
 
 <Aside type="tip">
 GAEMI Loci runs entirely in the browser, so no additional software installation is required.
 </Aside>
 
 GAEMI Loci organizes HD map generation into **three Phases**.
-Each Phase is broken down into detailed Steps, and you can monitor current progress from the dashboard.
+Each Phase is broken down into individual Steps, and you can monitor current progress from the dashboard.
 
 <img src={workflowPhases.src} alt="Diagram of the GAEMI Loci three-phase workflow" />
 
@@ -36,11 +36,11 @@ Each Phase is broken down into detailed Steps, and you can monitor current progr
 
 <YouTube id="p-k46jWUCjc" title="Phase 1 — Preparation Workflow" />
 
-This is the stage where you prepare from the office before deploying the robot to the field.
+In this stage, you prepare from the office before deploying the robot to the field.
 
 <Steps>
 1. **Define the service area**: Mark the region where the robot will operate on a satellite map.
-2. **Author the robot path**: Edit the driving path that the robot will follow within the service area.
+2. **Author the robot path**: Edit the driving path the robot will follow within the service area.
 3. **Review and approve the path**: Have a reviewer inspect and approve the authored path.
 </Steps>
 
@@ -54,14 +54,14 @@ Phase 1 can be carried out remotely without visiting the site.
 
 <YouTube id="--WVn8SYrYQ" title="Phase 2 — On-Site Installation Workflow" />
 
-This is the stage where you deploy the robot to the field, collect real-world mapping data, and generate the HD map.
+In this stage, you deploy the robot to the field, collect real-world mapping data, and generate the HD map.
 
 <Steps>
 1. **Collect mapping data**: Drive the robot around the site to gather data about the surrounding environment.
-2. **Upload data**: The collected data is uploaded to the server.
+2. **Upload data**: Upload the collected data to the server.
 3. **Automated HD map generation**: The server analyzes the uploaded data and automatically generates an HD map.
-4. **Edit and refine the map**: Review the generated map in the web interface and make any necessary edits or corrections.
-5. **Final upload**: Upload the completed map in a format ready to be deployed to the robot.
+4. **Edit and refine the map**: Review the generated map in the web interface and apply any necessary edits or corrections.
+5. **Final upload**: Upload the completed map in a format ready for deployment to the robot.
 </Steps>
 
 ## Phase 3 — Expansion
@@ -70,16 +70,16 @@ This is the stage where you deploy the robot to the field, collect real-world ma
 
 <YouTube id="jOmIDXuJR1g" title="Phase 3 — Expansion Workflow" />
 
-This is the stage where you expand the service area or improve an existing map. It can be repeated as needed.
+In this stage, you expand the service area or improve an existing map. It can be repeated as needed.
 
 <Steps>
 1. **Map additional areas**: Collect additional data from new regions.
 2. **Merge with the existing map**: Integrate the newly collected data into the existing HD map.
-3. **Iterative refinement**: Continuously improve map quality by adding data on a per-session basis.
+3. **Iterative refinement**: Continuously improve map quality by adding data session by session.
 </Steps>
 
 <Aside>
-Phase 3 can be performed even while the service is in operation. Simply add a new session whenever the operating area is expanded.
+Phase 3 can be performed even while the service is running. Simply add a new session whenever the operating area is expanded.
 </Aside>
 
 ---
@@ -91,7 +91,7 @@ Here is a brief summary of the entire process.
 <Steps>
 1. **Collect data in the field** — The robot drives around and scans the surrounding environment.
 2. **Automatic upload to the server** — The collected data is transferred to the cloud server.
-3. **Automated HD map generation** — The server processes the data to produce an HD map. You can monitor the progress in real time.
+3. **Automated HD map generation** — The server processes the data to produce an HD map. You can monitor progress in real time.
 4. **Edit the map in the browser** — Review the generated map in a web browser and perform tasks such as obstacle correction and path refinement.
 5. **Deploy to the robot** — Deliver the completed map to the robot for use in autonomous driving.
 </Steps>

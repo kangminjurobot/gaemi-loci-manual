@@ -9,15 +9,15 @@ import workspacePhase1Selected from '../../../../assets/screenshots/dashboard/da
 import workspacePhase2 from '../../../../assets/screenshots/dashboard/dashboard-workspace-phase2.png';
 import workspacePhase3 from '../../../../assets/screenshots/dashboard/dashboard-workspace-phase3.png';
 
-The Workspace tab is the workspace for managing the detailed workflow of the selected Job. The Job list is shown on the left, and the Step cards for each Phase are shown on the right.
+The Workspace tab is where you manage the detailed workflow of the selected Job. The Job list is shown on the left, and the Step cards for each Phase are shown on the right.
 
 ## Phase 1 — Setup (Pre-installation)
 
-In Phase 1, you define the service area and create and review the robot path before visiting the site.
+In Phase 1, you define the service area and then create and review the robot path before visiting the site.
 
 <Image src={workspacePhase1Empty} alt="Workspace Phase 1 with no Job selected — Job Queue and New Job button on the left, and a Select a Job message on the right" />
 
-- **Left — Job Queue**: Shows the list of Jobs that have been created. Click the **New Job** button at the top to create a new Job.
+- **Left — Job Queue**: Lists the Jobs that have been created. Click the **New Job** button at the top to create a new Job.
 - **Right — Step area**: When no Job is selected, a "Select a Job" message is shown.
 
 <Image src={workspacePhase1Selected} alt="Workspace Phase 1 with a Job selected — three Step cards: Add/Expand Service Area, Create Topological Path, Review and Apply Path" />
@@ -25,11 +25,11 @@ In Phase 1, you define the service area and create and review the robot path bef
 Once a Job is selected, the three Phase 1 Steps are shown as cards:
 
 1. **Add/Expand Service Area**: Register or expand a service area. Doc, Action, and Complete states are shown for each sub-step.
-2. **Create Topological Path**: Create the robot's travel path. Click the **Open Tool** button to launch the Path Editor.
+2. **Create Topological Path**: Create the robot's driving path. Click the **Open Tool** button to launch the Path Editor.
 3. **Review & Apply Path**: Review the created path and apply it.
 
 :::note
-Each Step card shows a progress icon. A green check icon means the Step is complete, and an in-progress Step shows its own status indicator. Click the **Open Tool** button to jump directly to the editor tool for that Step.
+Each Step card shows a progress icon. A green check icon means the Step is complete, and an in-progress Step shows its own status indicator. Click the **Open Tool** button to jump directly to the editor for that Step.
 :::
 
 ## Phase 2 — On-site Installation
@@ -48,15 +48,16 @@ The Steps in Phase 2 are grouped into four categories:
   - 3D Map Correction, 2D Map Generation
 - **Map Building**: Assembles and reviews the final map.
 
-Each Step card shows its current status (in progress, complete, etc.), and you can launch the corresponding tool directly with the **Open Tool** button.
+
+Each Step card shows its current status (in progress, complete, etc.), and you can launch the corresponding tool directly from the **Open Tool** button.
 
 :::caution
-The Steps in the Data Processing group are executed automatically by the server. While processing is in progress, the Step card shows an In-Progress state, and the workflow automatically advances to the next Step once processing is complete.
+The Steps in the Data Processing group run automatically on the server. While processing is in progress, the Step card shows an In-Progress state, and the workflow automatically advances to the next Step once processing is complete.
 :::
 
 ## Phase 3 — Expansion
 
-In Phase 3, you add new areas to an existing map. This stage is managed in **session** units, and you can add multiple sessions to expand the map iteratively.
+In Phase 3, you add new areas to an existing map. This stage is managed as **sessions**, and you can add multiple sessions to expand the map iteratively.
 
 <Image src={workspacePhase3} alt="Workspace Phase 3 — in-progress session cards in the Active section and completed session cards in the Done section" />
 
@@ -64,14 +65,14 @@ In Phase 3, you add new areas to an existing map. This stage is managed in **ses
 
 The Phase 3 screen is divided into two sections:
 
-- **Active**: Shows the sessions currently in progress. Each session card lists the included Steps and their progress.
+- **Active**: Shows sessions currently in progress. Each session card lists the included Steps and their progress.
 - **Done**: Shows completed sessions.
 
 Each session card supports the following actions:
 
-- **Edit**: Modify the session contents.
+- **Edit**: Modify the session's contents.
 - **Retry**: Retry a failed Step.
 
 :::tip
-You can add multiple sessions to a single Job to expand the map incrementally. For example, add the western area in session 1 and then add the eastern area in session 2. The timestamp on each session shows when it was created.
+You can add multiple sessions to a single Job to expand the map incrementally. For example, add the western area in session 1, and then add the eastern area in session 2. The timestamp on each session shows when it was created.
 :::

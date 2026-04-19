@@ -17,7 +17,7 @@ import calculateTransform from '../../../../assets/screenshots/map-correction/ge
 import saveYaml from '../../../../assets/screenshots/map-correction/georeferencing_save_yaml.png';
 import pinKeyframe from '../../../../assets/screenshots/map-correction/pin_keyframe.gif';
 
-Georeferencing is the process of aligning a SLAM-generated **local coordinate map** with the **real-world GPS coordinate system**. It is performed in the **Georeference tab** of the 3D Map Editor.
+Georeferencing is the process of aligning a SLAM-generated **local coordinate map** with the **real-world GPS coordinate system**. This work is performed in the **Georeference tab** of the 3D Map Editor.
 
 ## Screen Layout
 
@@ -28,7 +28,7 @@ Georeferencing is the process of aligning a SLAM-generated **local coordinate ma
 
 ## Workflow
 
-The full flow from adding GCPs to calculating the transformation.
+The full flow, from adding GCPs to calculating the transformation:
 
 <img src={georeferencing.src} alt="Georeferencing — end-to-end flow from adding GCPs to calculating the transformation" />
 
@@ -40,19 +40,19 @@ If a `map_meta_data.yaml` file exists in the `{site_name}` directory, the EPSG c
 
 1. Click the **Add GCP** button to enter GCP-adding mode.
    - The button displays the current number of GCPs: `Add GCP (0/4)`.
-   - When the mode is active, the button changes to **Stop (0/4)**.
+   - When this mode is active, the button changes to **Stop (0/4)**.
 
    <Image src={addGcpButton} alt="Before clicking the Add GCP button" />
    <Image src={addGcpButtonAfter} alt="After clicking the Add GCP button — changed to Stop mode" />
 
 2. In the 3D viewport, **Shift + left-click** to select a ground control point on the point cloud.
-   - The **X, Y, Z** coordinates of the clicked point are filled in automatically.
+   - The **X, Y, Z** coordinates of the clicked point are populated automatically.
    - Choose clearly identifiable locations such as building corners, road edges, or distinctive structures.
 
    <Image src={addGcpPointcloud} alt="Selecting a ground control point on the point cloud in the 3D viewport" />
 
-3. On the right-side satellite map, **Shift + left-click** to select the same location.
-   - The **latitude (Lat)** and **longitude (Lon)** of the clicked position are filled in automatically.
+3. On the right-side satellite map, **Shift + left-click** the same location.
+   - The **latitude (Lat)** and **longitude (Lon)** of the clicked position are populated automatically.
    - The GCP is confirmed and added to the list.
 
    <Image src={addGcpSatelliteMap} alt="Selecting the GPS coordinate of the matching location on the satellite map" />
@@ -60,7 +60,7 @@ If a `map_meta_data.yaml` file exists in the `{site_name}` directory, the EPSG c
 4. Repeat steps 1-3 to add at least **4** GCPs.
 
 5. Click the **Calculate Transformation** button to run the transformation calculation.
-   - Transformation options: **Yaw Only (2D rotation)** — restricts rotation to the horizontal plane / **Fix Z** — locks height translation.
+   - Transformation options: **Yaw Only (2D rotation)** — restricts rotation to the horizontal plane / **Fix Z** — locks the height translation.
    - While calculating, the button changes to **Calculating...**.
 
    <Image src={calculateTransform} alt="Calculate Transformation button and transformation options" />
@@ -72,26 +72,26 @@ If a `map_meta_data.yaml` file exists in the `{site_name}` directory, the EPSG c
 </Steps>
 
 :::caution
-When the GCPs are nearly collinear, accuracy degrades. It is best to distribute them across the area.
+When GCPs are nearly collinear, accuracy degrades. Distribute them across the area for best results.
 :::
 
 ## Pin Keyframe
 
-Even after aligning the entire map to the GPS coordinate system through GCP georeferencing, structural errors inside the SLAM map can cause **certain segments to still be misaligned with the satellite map**. Pin Keyframe is a feature that corrects these local misalignments **on a per-keyframe basis**.
+Even after aligning the entire map to the GPS coordinate system through GCP georeferencing, structural errors inside the SLAM map can leave **certain segments still misaligned with the satellite map**. Pin Keyframe corrects these local misalignments **on a per-keyframe basis**.
 
-When you reference the satellite map and move a misaligned keyframe to its correct position, the following three steps are performed automatically:
+When you reference the satellite map and move a misaligned keyframe to its correct position, the following three steps run automatically:
 
-1. Add a **Prior Factor** at the moved location.
+1. Add a **Prior Factor** at the new location.
 2. Run **graph optimization** — the correction propagates to surrounding keyframes.
-3. **Automatically remove** the Prior Factor — prevents excessive constraints during subsequent corrections.
+3. **Automatically remove** the Prior Factor — preventing excessive constraints during subsequent corrections.
 
-This allows the correction at that point to naturally propagate to adjacent areas, while keeping previous pins from remaining as constraints when correcting other locations later.
+This lets the correction at that point naturally propagate to adjacent areas, while keeping previous pins from lingering as constraints when you correct other locations later.
 
 <img src={pinKeyframe.src} alt="Pin Keyframe — end-to-end flow from selecting a keyframe to propagating the correction" />
 
 ### How to Use
 
-After identifying a misaligned segment on the satellite map, select the relevant keyframe in the 3D viewport with `Ctrl + left-click` and drag it to the correct position. This is useful for fine-tuning partially skewed areas rather than the entire map.
+After identifying a misaligned segment on the satellite map, select the relevant keyframe in the 3D viewport with `Ctrl + left-click` and drag it to the correct position. This is useful for fine-tuning individual skewed areas rather than the entire map.
 
 ## Typical Workflow
 
@@ -114,4 +114,4 @@ After identifying a misaligned segment on the satellite map, select the relevant
 | **Save YAML** | Saves the YAML to the service-area root and to the `hd_map/georeferenced/` directory |
 | **Export** | Downloads the YAML file to the local PC |
 
-The saved YAML (`map_meta_data.yaml`) contains the EPSG code, Yaw, and Translation information. It is loaded automatically the next time the map is opened.
+The saved YAML (`map_meta_data.yaml`) contains the EPSG code, Yaw, and Translation information. It loads automatically the next time the map is opened.
