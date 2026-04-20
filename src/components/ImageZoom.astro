@@ -1,32 +1,71 @@
 {/*
-  Image zoom initialization. Click any content image to zoom.
-  This component renders no visible output; it only ships the client script.
+  Image lightbox using PhotoSwipe.
+  - Click any content image to open.
+  - Wheel or pinch to zoom in/out further.
+  - Drag to pan when zoomed.
+  - Esc, outside click, or close button to exit.
+  Renders no visible output; ships the client script only.
 */}
 
 <script>
-  import mediumZoom from 'medium-zoom';
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  import 'photoswipe/style.css';
 
-  function initImageZoom() {
-    // Content images live inside <main>. Exclude anything explicitly skipped.
-    const images = document.querySelectorAll<HTMLImageElement>(
-      'main img:not([data-zoom-skip])',
-    );
-    if (images.length === 0) return;
+  type PhotoSwipeLightboxInstance = InstanceType<typeof PhotoSwipeLightbox>;
+  let lightbox: PhotoSwipeLightboxInstance | null = null;
 
-    // medium-zoom auto-attaches click handlers to matching elements and
-    // handles cursor, backdrop, and close interactions for us.
-    mediumZoom(images, {
-      background: 'rgba(0, 0, 0, 0.85)',
-      margin: 24,
-      scrollOffset: 0,
+  function initZoom(): void {
+    if (lightbox) return;
+
+    const gallery = document.querySelector('main');
+    if (!gallery) return;
+
+    lightbox = new PhotoSwipeLightbox({
+      gallery: 'main',
+      children: 'img:not([data-zoom-skip])',
+      pswpModule: () => import('photoswipe'),
+      bgOpacity: 0.9,
+      initialZoomLevel: 'fit',
+      secondaryZoomLevel: 2,
+      maxZoomLevel: 6,
+      wheelToZoom: true,
+      padding: { top: 24, bottom: 24, left: 24, right: 24 },
+      showHideAnimationType: 'zoom',
     });
+
+    // Derive source dimensions from each <img> on the page.
+    lightbox.addFilter('itemData', (itemData) => {
+      const el = (itemData as { element?: Element }).element;
+      if (el instanceof HTMLImageElement) {
+        const widthAttr = Number(el.getAttribute('width'));
+        const heightAttr = Number(el.getAttribute('height'));
+        return {
+          ...itemData,
+          src: el.currentSrc || el.src,
+          width: el.naturalWidth || widthAttr || 1600,
+          height: el.naturalHeight || heightAttr || 900,
+          alt: el.alt,
+          msrc: el.currentSrc || el.src,
+          element: el,
+        };
+      }
+      return itemData;
+    });
+
+    // Show a zoom-in cursor on matching images.
+    gallery
+      .querySelectorAll<HTMLImageElement>('img:not([data-zoom-skip])')
+      .forEach((img) => {
+        img.style.cursor = 'zoom-in';
+      });
+
+    lightbox.init();
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initImageZoom);
+    document.addEventListener('DOMContentLoaded', initZoom);
   } else {
-    initImageZoom();
+    initZoom();
   }
-  // Re-init on bfcache restore (browser back/forward).
-  window.addEventListener('pageshow', initImageZoom);
+  window.addEventListener('pageshow', initZoom);
 </script>

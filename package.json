@@ -13,7 +13,7 @@
     "@astrojs/sitemap": "^3.1.6",
     "@astrojs/starlight": "0.28.4",
     "astro": "4.16.18",
-    "medium-zoom": "^1.1.0",
+    "photoswipe": "^5.4.4",
     "sharp": "^0.33.5",
     "zod": "^3.23.8"
   }
